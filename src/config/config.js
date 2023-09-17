@@ -6,7 +6,7 @@ var startSceneConfig = {
     width: GAME_WIDTH,
     height: GAME_HEIGHT,
     scene: [GameScene],
-    pixelArt: true,
+    roundPixels: true,
     zoom: 1,
     physics: {
         default: 'arcade',
