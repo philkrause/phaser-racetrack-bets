@@ -17,5 +17,4 @@ var startSceneConfig = {
     }
 };
 
-
 export default startSceneConfig
