@@ -8,7 +8,8 @@
 	},
 	"author": "philkrause",
 	"dependencies": {
-		"phaser": "^3.55.2"
+		"phaser": "^3.55.2",
+		"tile-extruder": "^2.1.0"
 	},
 	"devDependencies": {
 		"parcel": "^2.4.1",

@@ -14,7 +14,7 @@ class GameScene extends Phaser.Scene {
   
   //PRELOAD===================================================================================
   preload() {
-    this.load.image('background', '../assets/images/background1.png');
+    this.load.image('background', '../assets/images/background2.png');
     this.load.spritesheet('horse1','../assets/images/horse1_sheet.png', { frameWidth: 432, frameHeight: 321 }); 
     this.load.bitmapFont('ccFont', '../assets/fonts/carrier_command.png', '../assets/fonts/carrier_command.xml');
     
@@ -24,7 +24,7 @@ class GameScene extends Phaser.Scene {
   create(){
     const width = this.scale.width;
     const height = this.scale.height;
-    this.background = this.add.tileSprite(width * .5+10,height * .5,width,height*.5,'background');
+    this.background = this.add.image(width , height * .5 ,'background');
     //text
     this.realtimeText = this.add.bitmapText(10, 10, 'ccFont', '').setTint(this.red).setScale(.5).setScrollFactor(0).setDepth(2)
 
@@ -59,7 +59,7 @@ class GameScene extends Phaser.Scene {
     })
 
     this.realtimeText.setText(`time: ${this.realTime.toFixed(2)}`)
-    this.background.tilePositionX += 5.9;
+    this.background.x -= 5.9;    
   }
 
 
