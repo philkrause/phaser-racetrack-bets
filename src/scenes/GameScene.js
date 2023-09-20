@@ -43,16 +43,34 @@ class GameScene extends Phaser.Scene {
       });
     }
 
+    const createDash = (sprite,delay) => {
+      this.tweens.add({
+        targets: [sprite],
+        x: 300,
+        duration: 8000,
+        hold: 500,
+        repeat: -1,
+        repeatDelay: delay,
+        ease: 'back.inout',
+        yoyo:true,
+      })
+    }
 
     this.horse1 = this.physics.add.sprite(width * .5,height * .5 ,'horse1').setScale(.3);
     this.horse2 = this.physics.add.sprite(width * .5,height * .5 + 100 ,'horse2').setScale(.3);
-
+    
     this.horses = [
       {horse: this.horse1, speed: 3, stamina: 1},
-      {horse: this.horse2, speed: 3, stamina: 1},
+      {horse: this.horse2, speed: 1, stamina: 1},
     ]
-    createAnim('horse1')
-    createAnim('horse2')
+
+    this.horses.forEach((h,index) => {
+      let horseSprite = `horse${index+1}`
+      let delay = Phaser.Math.Between(100,3000)
+      console.log(delay)
+      createAnim(horseSprite)
+      createDash(h.horse,delay)
+    })
   }
   
   //UPDATE===================================================================================
