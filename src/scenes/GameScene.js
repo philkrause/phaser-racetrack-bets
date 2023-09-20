@@ -5,7 +5,7 @@ class GameScene extends Phaser.Scene {
           key: 'GameSceneKey'
       });
 
-    this.background;
+    this.background_clouds;
     this.createHorse;
     this.horse1;
     this.realTime = 0;
@@ -14,8 +14,9 @@ class GameScene extends Phaser.Scene {
   
   //PRELOAD===================================================================================
   preload() {
-    this.load.image('background', '../assets/images/background2.png');
+    this.load.image('background1', '../assets/images/background1.png');
     this.load.spritesheet('horse1','../assets/images/horse1_sheet.png', { frameWidth: 432, frameHeight: 321 }); 
+    this.load.spritesheet('horse2','../assets/images/horse2_sheet.png', { frameWidth: 432, frameHeight: 321 }); 
     this.load.bitmapFont('ccFont', '../assets/fonts/carrier_command.png', '../assets/fonts/carrier_command.xml');
     
   } 
@@ -24,29 +25,34 @@ class GameScene extends Phaser.Scene {
   create(){
     const width = this.scale.width;
     const height = this.scale.height;
-    this.background = this.add.image(width , height * .5 ,'background');
+    //this.background_clouds = this.add.tileSprite(width ,112,0,0,'background1_clouds')
+    //this.background_course= this.add.tileSprite(width ,112,0,0,'background1_course')
+    this.background= this.add.tileSprite(0 ,height * .5 ,0,0,'background1')
+
+
     //text
     this.realtimeText = this.add.bitmapText(10, 10, 'ccFont', '').setTint(this.red).setScale(.5).setScrollFactor(0).setDepth(2)
 
     //create animation function
     const createAnim = (sprite) => {
       this.anims.create({
-        key: 'run',
+        key: `${sprite}-run`,
         frames:this.anims.generateFrameNumbers(sprite , { start: 0, end: 11 }),
         frameRate: 15,
         repeat: -1
       });
     }
 
+
     this.horse1 = this.physics.add.sprite(width * .5,height * .5 ,'horse1').setScale(.3);
-    this.horse2 = this.physics.add.sprite(width * .5,height * .5 + 100 ,'horse1').setScale(.3);
+    this.horse2 = this.physics.add.sprite(width * .5,height * .5 + 100 ,'horse2').setScale(.3);
 
     this.horses = [
       {horse: this.horse1, speed: 3, stamina: 1},
       {horse: this.horse2, speed: 3, stamina: 1},
     ]
-
     createAnim('horse1')
+    createAnim('horse2')
   }
   
   //UPDATE===================================================================================
@@ -54,12 +60,14 @@ class GameScene extends Phaser.Scene {
 
     this.realTime += 1/60
 
-    this.horses.forEach(h => {
-      h.horse.anims.play('run', true);
+    // let rng = Phaser.Math.Between(0,150)
+    // console.log(rng)
+    this.horses.forEach((h,index) => {
+      h.horse.anims.play(`horse${index+1}-run`,true)
     })
 
     this.realtimeText.setText(`time: ${this.realTime.toFixed(2)}`)
-    this.background.x -= 5.9;    
+    this.background.tilePositionX += 8
   }
 
 
