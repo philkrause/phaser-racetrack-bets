@@ -18,6 +18,7 @@ class GameScene extends Phaser.Scene {
     this.load.image('background1_clouds', '../assets/images/background1_clouds.png');
     this.load.image('background1_seats', '../assets/images/background1_seats.png');
     this.load.image('background1_course', '../assets/images/background1_course.png');
+    this.load.image('background1_wall', '../assets/images/background1_wall.png');
     this.load.spritesheet('horse1','../assets/images/horse1_sheet.png', { frameWidth: 432, frameHeight: 321 }); 
     this.load.spritesheet('horse2','../assets/images/horse2_sheet.png', { frameWidth: 432, frameHeight: 321 }); 
     this.load.spritesheet('horse3','../assets/images/horse3_sheet.png', { frameWidth: 432, frameHeight: 321 }); 
@@ -32,9 +33,9 @@ class GameScene extends Phaser.Scene {
     const width = this.scale.width;
     const height = this.scale.height;
     this.background_clouds = this.add.tileSprite(width ,243,0,0,'background1_clouds').setDepth(1);
-    this.background_seats = this.add.tileSprite(0,300,0,0,'background1_seats').setDepth(1);
-    this.background_course = this.add.tileSprite(0,500,0,0,'background1_course').setDepth(1);
-    //this.background = this.add.tileSprite(0 ,height * .5 ,0,0,'background1');
+    this.background_wall = this.add.tileSprite(0 ,360,0,0,'background1_wall').setDepth(1);
+    this.background_seats = this.add.tileSprite(0,300,0,0,'background1_seats').setDepth(4);
+    this.background_course = this.add.tileSprite(0,492,0,0,'background1_course').setDepth(3);
 
 
     //text
