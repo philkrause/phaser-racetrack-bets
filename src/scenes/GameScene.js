@@ -15,6 +15,7 @@ class GameScene extends Phaser.Scene {
     this.realtimeText;
     this.allBackgrounds = [];
     this.rngDash = false;
+    this.createDash;
   }
 
   //PRELOAD===================================================================================
@@ -107,15 +108,17 @@ class GameScene extends Phaser.Scene {
       });
     }
 
-    const createDash = (sprite, delay) => {
-      console.log('DASH!')
+    this.createDash = (sprite, delay) => {
       this.tweens.add({
-        targets: [sprite],
+        targets: [sprite.horse],
         x: 300,
-        duration: 10000,
+        duration: 5000,
         hold: 700,
         loopDelay: delay,
-        ease: 'back.inout',
+        onComplete: () => {
+          console.log('dash completed')
+          sprite.dashing = false
+        },
         yoyo: true,
       })
     }
@@ -129,26 +132,31 @@ class GameScene extends Phaser.Scene {
 
     this.horses = [{
         horse: this.horse0,
+        dashing: false,
         speed: 3,
         stamina: 1
       },
       {
         horse: this.horse1,
+        dashing: false,
         speed: 1,
         stamina: 1
       },
       {
         horse: this.horse2,
+        dashing: false,
         speed: 1,
         stamina: 1
       },
       {
         horse: this.horse3,
+        dashing: false,
         speed: 1,
         stamina: 1
       },
       {
         horse: this.horse4,
+        dashing: false,
         speed: 1,
         stamina: 1
       },
@@ -160,15 +168,6 @@ class GameScene extends Phaser.Scene {
       createAnim(horseSprite)
     })
 
-
-    let rng = Phaser.Math.Between(0,this.horses.length-1)
-    
-    if(this.rngDash === false) {
-      console.log(rng)
-      let horse = this.horses[rng]
-      createDash(horse.horse, 1000)
-      this.rngDash = true;
-    }
   }
 
   //UPDATE===================================================================================
@@ -179,8 +178,20 @@ class GameScene extends Phaser.Scene {
     
     this.createDashTimer += 1/60
 
-    if(this.createDashTimer >= 20){
+    if(this.createDashTimer >= 2){
+      let rng = Phaser.Math.Between(0,this.horses.length-1)
+      
+      let horse = this.horses[rng]
+      let horseDashing = this.horses[rng].dashing;
 
+      if(!horseDashing){
+        console.log(`Horse ${rng} Dashing!`)
+        
+        this.horses[rng].dashing = true;
+        this.createDash(horse, 1000)
+        this.createDashTimer = 0;
+      } 
+      
     }
 
     this.realtimeText.setText(`time: ${this.realTime.toFixed(2)}`)
