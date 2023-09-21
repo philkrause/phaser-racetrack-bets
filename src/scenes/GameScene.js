@@ -15,8 +15,14 @@ class GameScene extends Phaser.Scene {
   //PRELOAD===================================================================================
   preload() {
     this.load.image('background1', '../assets/images/background1.png');
+    this.load.image('background1_clouds', '../assets/images/background1_clouds.png');
+    this.load.image('background1_seats', '../assets/images/background1_seats.png');
+    this.load.image('background1_course', '../assets/images/background1_course.png');
     this.load.spritesheet('horse1','../assets/images/horse1_sheet.png', { frameWidth: 432, frameHeight: 321 }); 
     this.load.spritesheet('horse2','../assets/images/horse2_sheet.png', { frameWidth: 432, frameHeight: 321 }); 
+    this.load.spritesheet('horse3','../assets/images/horse3_sheet.png', { frameWidth: 432, frameHeight: 321 }); 
+    this.load.spritesheet('horse4','../assets/images/horse4_sheet.png', { frameWidth: 432, frameHeight: 321 }); 
+    this.load.spritesheet('horse5','../assets/images/horse5_sheet.png', { frameWidth: 432, frameHeight: 321 }); 
     this.load.bitmapFont('ccFont', '../assets/fonts/carrier_command.png', '../assets/fonts/carrier_command.xml');
     
   } 
@@ -25,9 +31,10 @@ class GameScene extends Phaser.Scene {
   create(){
     const width = this.scale.width;
     const height = this.scale.height;
-    //this.background_clouds = this.add.tileSprite(width ,112,0,0,'background1_clouds')
-    //this.background_course= this.add.tileSprite(width ,112,0,0,'background1_course')
-    this.background= this.add.tileSprite(0 ,height * .5 ,0,0,'background1')
+    this.background_clouds = this.add.tileSprite(width ,243,0,0,'background1_clouds').setDepth(1);
+    this.background_seats = this.add.tileSprite(0,300,0,0,'background1_seats').setDepth(1);
+    this.background_course = this.add.tileSprite(0,500,0,0,'background1_course').setDepth(1);
+    //this.background = this.add.tileSprite(0 ,height * .5 ,0,0,'background1');
 
 
     //text
@@ -49,25 +56,33 @@ class GameScene extends Phaser.Scene {
         x: 300,
         duration: 8000,
         hold: 500,
-        repeat: -1,
-        repeatDelay: delay,
+        loop: -1,
+        loopDelay: delay,
         ease: 'back.inout',
         yoyo:true,
       })
     }
 
-    this.horse1 = this.physics.add.sprite(width * .5,height * .5 ,'horse1').setScale(.3);
-    this.horse2 = this.physics.add.sprite(width * .5,height * .5 + 100 ,'horse2').setScale(.3);
+    this.horse1 = this.physics.add.sprite(width * .5 -100,(height * .5) -20 ,'horse1').setScale(.3).setDepth(4);
+    this.horse2 = this.physics.add.sprite(width * .5 -100,this.horse1.y + 40 ,'horse2').setScale(.3).setDepth(4);
+    this.horse3 = this.physics.add.sprite(width * .5 -100,this.horse1.y + 80 ,'horse2').setScale(.3).setDepth(4);
+    this.horse4 = this.physics.add.sprite(width * .5 -100,this.horse1.y + 120 ,'horse2').setScale(.3).setDepth(4);
+    this.horse5 = this.physics.add.sprite(width * .5 -100,this.horse1.y + 155 ,'horse2').setScale(.3).setDepth(4);
+
+
     
     this.horses = [
       {horse: this.horse1, speed: 3, stamina: 1},
       {horse: this.horse2, speed: 1, stamina: 1},
+      {horse: this.horse3, speed: 1, stamina: 1},
+      {horse: this.horse4, speed: 1, stamina: 1},
+      {horse: this.horse5, speed: 1, stamina: 1},
+
     ]
 
     this.horses.forEach((h,index) => {
       let horseSprite = `horse${index+1}`
-      let delay = Phaser.Math.Between(100,3000)
-      console.log(delay)
+      let delay = Phaser.Math.Between(100,8000)
       createAnim(horseSprite)
       createDash(h.horse,delay)
     })
@@ -85,7 +100,9 @@ class GameScene extends Phaser.Scene {
     })
 
     this.realtimeText.setText(`time: ${this.realTime.toFixed(2)}`)
-    this.background.tilePositionX += 8
+    this.background_clouds.tilePositionX += 1
+    this.background_seats.tilePositionX += 3
+   // this.background.tilePositionX += 8
   }
 
 
