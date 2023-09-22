@@ -1,13 +1,14 @@
-export const atlasJSON = {
-    "frames": [
-      {
-        "filename": "gui-back",
-        "frame": {
-          "x": 0,
-          "y": 666,
-          "w": 666,
-          "h": 600
+{ "atlasJSON": {
+      "frames": [
+        {
+          "filename": "gui-back",
+          "frame": {
+            "x": 0,
+            "y": 666,
+            "w": 666,
+            "h": 600
+          }
         }
-      }
-    ]
+      ]
+  }
 }
