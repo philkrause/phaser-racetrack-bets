@@ -1,4 +1,4 @@
-import * as Config from '../config/constants';
+import { GAME_SPEED } from '../config/constants';
 
 class GameScene extends Phaser.Scene {
   constructor(config) {
@@ -6,7 +6,7 @@ class GameScene extends Phaser.Scene {
       key: 'GameSceneKey'
     });
 
-    this.gameSpeed = Config.GAME_SPEED;
+    this.gameSpeed = GAME_SPEED;
     this.background_clouds;
     this.createHorse;
     this.horse1;
@@ -20,7 +20,6 @@ class GameScene extends Phaser.Scene {
 
   //PRELOAD===================================================================================
   preload() {
-    this.load.image('background1', '../assets/images/background1.png');
     this.load.image('background1_clouds', '../assets/images/background1_clouds.png');
     this.load.image('background1_seats', '../assets/images/background1_seats.png');
     this.load.image('background1_course', '../assets/images/background1_course.png');
@@ -29,8 +28,8 @@ class GameScene extends Phaser.Scene {
     this.load.image('background1_fence', '../assets/images/background1_fence.png');
     this.load.image('gui_background', '../assets/images/gui_background.png');
     this.load.image('button_pause', '../assets/images/button_pause.png');
-
-
+    this.load.image('finish_line', '../assets/images/finish_line.png');
+    this.load.atlas('table_result', '../assets/images/table_result.png', '../assets/images/table_result.json');
 
     this.load.spritesheet('horse0', '../assets/images/horse1_sheet.png', {
       frameWidth: 432,
@@ -67,8 +66,10 @@ class GameScene extends Phaser.Scene {
     this.background_course = this.add.tileSprite(0, 492, 0, 0, 'background1_course').setDepth(3);
     this.background_fence = this.add.tileSprite(0, 365, 0, 0, 'background1_fence').setDepth(3);
     this.background_fence2 = this.add.tileSprite(0, 602, 0, 0, 'background1_fence').setDepth(3);
-    this.gui_background = this.add.image(width*.5, 633, 'gui_background').setScale(.432);
+    //this.gui_background = this.add.image(width*.5, 633, 'gui_background').setScale(.432);
     this.button_pause = this.add.image(width-20, 633, 'button_pause').setScale(.5);
+    this.finish_line = this.add.image(width-20, height*.6, 'finish_line').setScale(.4).setRotation(Phaser.Math.DegToRad(90)).setDepth(3).setAlpha(.8);
+    this.add.image(0, 400, 'table-result', 'gui-back').setOrigin(0);
 
     this.allBackgrounds = [
       {
@@ -98,7 +99,6 @@ class GameScene extends Phaser.Scene {
         tileSpeed: 4,
       },
     ]
-
     
     //text
     this.realtimeText = this.add.bitmapText(10, 10, 'ccFont', '').setTint(this.red).setScale(.5).setScrollFactor(0).setDepth(2)
