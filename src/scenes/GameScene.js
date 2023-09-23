@@ -16,6 +16,7 @@ class GameScene extends Phaser.Scene {
     this.allBackgrounds = [];
     this.rngDash = false;
     this.createDash;
+    this.courseLength = 5;
   }
 
   //PRELOAD===================================================================================
@@ -30,6 +31,7 @@ class GameScene extends Phaser.Scene {
     this.load.image('button_pause', '../assets/images/button_pause.png');
     this.load.image('finish_line', '../assets/images/finish_line.png');
     this.load.atlas('table_result', '../assets/images/table_result.png', '../assets/images/table_result.json');
+    this.courseLength = 5;
 
     this.load.spritesheet('horse0', '../assets/images/horse1_sheet.png', {
       frameWidth: 432,
@@ -64,13 +66,14 @@ class GameScene extends Phaser.Scene {
     this.background_seats = this.add.tileSprite(0, 292, 0, 0, 'background1_seats').setDepth(3);
     this.background_trees = this.add.tileSprite(0, 330, 0, 0, 'background1_trees').setDepth(4);
     this.background_course = this.add.tileSprite(0, 492, 0, 0, 'background1_course').setDepth(3);
+    //this.background_course_mini = this.add.tileSprite(0, 75, 0, 0, 'background1_course').setDepth(4).setScale(.4,.435);
     this.background_fence = this.add.tileSprite(0, 365, 0, 0, 'background1_fence').setDepth(3);
     this.background_fence2 = this.add.tileSprite(0, 602, 0, 0, 'background1_fence').setDepth(3);
-    this.finish_line = this.add.image(width-20, height*.6, 'finish_line').setScale(.4).setRotation(Phaser.Math.DegToRad(90)).setDepth(3).setAlpha(.8);
     
-    this.add.image((width*.5) + 2, height*.885, 'table_result', 'gui-back').setOrigin(.5).setScale(.512,.278).setDepth(3)
+    this.add.image((width*.5) + 2, height*.885, 'table_result', 'gui-back').setOrigin(.5).setScale(.53,.278).setDepth(3)
+    this.add.image((width*.5) + 2, 65, 'table_result', 'gui-back').setOrigin(.5).setScale(.53,.2).setDepth(3)
+    this.add.image((width*.5) + 2, height*.88, 'table_result', 'gui-back2').setOrigin(.5).setScale(.55,.3).setDepth(3)
     this.button_pause = this.add.image(width-20, 633, 'button_pause').setScale(.5).setDepth(4);
-    //this.add.image(188, height*.9, 'table_result', 'gui-back2').setOrigin(.5).scaleY(2);
 
 
     this.allBackgrounds = [
@@ -122,13 +125,22 @@ class GameScene extends Phaser.Scene {
       this.tweens.add({
         targets: [sprite.horse],
         x: 300,
-        duration: 5000,
+        duration: 6000,
         hold: 700,
         loopDelay: delay,
         onComplete: () => {
           sprite.dashing = false
         },
         yoyo: true,
+      })
+    }
+
+
+    this.createFinish = (sprite) => {
+      this.tweens.add({
+        targets: [sprite.horse],
+        x: 700,
+        duration: 800,
       })
     }
 
@@ -190,26 +202,11 @@ class GameScene extends Phaser.Scene {
   
     //debug
     this.realTime += 1/60
-    
+
     this.createDashTimer += 1/60
 
-    //create Dash
-    if(this.createDashTimer >= 2){
-      let rng = Phaser.Math.Between(0,this.horses.length-1)
-      
-      let horse = this.horses[rng]
-      let horseDashing = this.horses[rng].dashing;
-
-      if(!horseDashing){        
-        this.horses[rng].dashing = true;
-        this.createDash(horse, 1000)
-        this.createDashTimer = 0;
-      } 
-      
-    }
-
     //text
-    this.realtimeText.setText(`time: ${this.realTime.toFixed(2)}`)
+    this.realtimeText.setText(`time: ${this.realTime.toFixed(2)}`).setDepth(5)
 
   
     //animations
@@ -217,12 +214,33 @@ class GameScene extends Phaser.Scene {
       h.horse.anims.play(`horse${index}-run`, true)
     })
 
-    //background motion
-    this.allBackgrounds.forEach(b => {
-     b.background.tilePositionX += b.tileSpeed * this.gameSpeed
-    })
+    //course end
+    if(this.realTime <= this.courseLength){ 
+      this.gameSpeed = 1
+      //create Dash
+      if(this.createDashTimer >= 2 && this.realTime <= this.courseLength){
+        let rng = Phaser.Math.Between(0,this.horses.length-1)
+        
+        let horse = this.horses[rng]
+        let horseDashing = this.horses[rng].dashing;
 
-    //console.log(this.allBackgrounds[0].background.tilePositionX)
+        if(!horseDashing){        
+          this.horses[rng].dashing = true;
+          this.createDash(horse, 1000)
+          this.createDashTimer = 0;
+        } 
+      
+    }
+      //background motion
+      this.allBackgrounds.forEach(b => {
+      b.background.tilePositionX += b.tileSpeed * this.gameSpeed
+      })
+    } else {
+      this.finish_line = this.add.image(this.scale.width-20, this.scale.height*.6, 'finish_line').setScale(.4).setRotation(Phaser.Math.DegToRad(90)).setDepth(3).setAlpha(.8);
+      this.horses.forEach(h => {
+        this.createFinish(h, true)
+      })
+    }
   }
 
 
