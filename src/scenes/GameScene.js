@@ -66,10 +66,12 @@ class GameScene extends Phaser.Scene {
     this.background_course = this.add.tileSprite(0, 492, 0, 0, 'background1_course').setDepth(3);
     this.background_fence = this.add.tileSprite(0, 365, 0, 0, 'background1_fence').setDepth(3);
     this.background_fence2 = this.add.tileSprite(0, 602, 0, 0, 'background1_fence').setDepth(3);
-    //this.gui_background = this.add.image(width*.5, 633, 'gui_background').setScale(.432);
-    this.button_pause = this.add.image(width-20, 633, 'button_pause').setScale(.5);
     this.finish_line = this.add.image(width-20, height*.6, 'finish_line').setScale(.4).setRotation(Phaser.Math.DegToRad(90)).setDepth(3).setAlpha(.8);
-    this.add.image(0, 400, 'table-result', 'gui-back').setOrigin(0);
+    
+    this.add.image((width*.5) + 2, height*.885, 'table_result', 'gui-back').setOrigin(.5).setScale(.512,.278).setDepth(3)
+    this.button_pause = this.add.image(width-20, 633, 'button_pause').setScale(.5).setDepth(4);
+    //this.add.image(188, height*.9, 'table_result', 'gui-back2').setOrigin(.5).scaleY(2);
+
 
     this.allBackgrounds = [
       {
@@ -198,9 +200,7 @@ class GameScene extends Phaser.Scene {
       let horse = this.horses[rng]
       let horseDashing = this.horses[rng].dashing;
 
-      if(!horseDashing){
-        //console.log(`Horse ${this.horses[rng].name} Dashing!`)
-        
+      if(!horseDashing){        
         this.horses[rng].dashing = true;
         this.createDash(horse, 1000)
         this.createDashTimer = 0;
@@ -216,8 +216,6 @@ class GameScene extends Phaser.Scene {
     this.horses.forEach((h, index) => {
       h.horse.anims.play(`horse${index}-run`, true)
     })
-    
-    
 
     //background motion
     this.allBackgrounds.forEach(b => {
