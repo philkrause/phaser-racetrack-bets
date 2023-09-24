@@ -16,7 +16,7 @@ class GameScene extends Phaser.Scene {
     this.allBackgrounds = [];
     this.rngDash = false;
     this.createDash;
-    this.courseLength = 5;
+    this.courseLength;
   }
 
   //PRELOAD===================================================================================
@@ -27,10 +27,15 @@ class GameScene extends Phaser.Scene {
     this.load.image('background1_wall', '../assets/images/background1_wall.png');
     this.load.image('background1_trees', '../assets/images/background1_trees.png');
     this.load.image('background1_fence', '../assets/images/background1_fence.png');
+    this.load.image('background1_finish', '../assets/images/background1_finish.png');
     this.load.image('gui_background', '../assets/images/gui_background.png');
     this.load.image('button_pause', '../assets/images/button_pause.png');
     this.load.image('finish_line', '../assets/images/finish_line.png');
+    this.load.image('horse0_profile', '../assets/images/horse0_profile.png');
+
     this.load.atlas('table_result', '../assets/images/table_result.png', '../assets/images/table_result.json');
+    
+    //length of course in seconds
     this.courseLength = 5;
 
     this.load.spritesheet('horse0', '../assets/images/horse1_sheet.png', {
@@ -104,9 +109,10 @@ class GameScene extends Phaser.Scene {
         tileSpeed: 4,
       },
     ]
-    
+
     //text
     this.realtimeText = this.add.bitmapText(10, 10, 'ccFont', '').setTint(this.red).setScale(.5).setScrollFactor(0).setDepth(2)
+
 
     //create animation function
     const createAnim = (sprite) => {
@@ -117,7 +123,8 @@ class GameScene extends Phaser.Scene {
           end: 11
         }),
         frameRate: 8 * this.gameSpeed,
-        repeat: -1
+        repeat: -1,
+        timeScale: 1
       });
     }
 
@@ -140,7 +147,7 @@ class GameScene extends Phaser.Scene {
       this.tweens.add({
         targets: [sprite.horse],
         x: 700,
-        duration: 800,
+        duration: 700,
       })
     }
 
@@ -151,41 +158,43 @@ class GameScene extends Phaser.Scene {
     this.horse3 = this.physics.add.sprite(width * .5 - 100, this.horse0.y + 120, 'horse3').setScale(.3).setDepth(4);
     this.horse4 = this.physics.add.sprite(width * .5 - 100, this.horse0.y + 155, 'horse4').setScale(.3).setDepth(4);
 
-
     this.horses = [{
         horse: this.horse0,
         name: 'Viscount',
         dashing: false,
         speed: 3,
-        stamina: 1
+        stamina: 1,
       },
       {
         horse: this.horse1,
         name: 'Lady Grace',
         dashing: false,
         speed: 1,
-        stamina: 1
+        stamina: 1,
+
       },
       {
         horse: this.horse2,
         name: 'Princess April',
         dashing: false,
         speed: 1,
-        stamina: 1
+        stamina: 1,
+
       },
       {
         horse: this.horse3,
         name: 'Izzy',
         dashing: false,
         speed: 1,
-        stamina: 1
+        stamina: 1,
+
       },
       {
         horse: this.horse4,
         name: 'Lord Dorian',
         dashing: false,
         speed: 1,
-        stamina: 1
+        stamina: 1,
       },
 
     ]
@@ -193,6 +202,7 @@ class GameScene extends Phaser.Scene {
     this.horses.forEach((h, index) => {
       let horseSprite = `horse${index}`
       createAnim(horseSprite)
+      this.add.image(100,20, `horse${index}_profile`).setDepth(4).setScale(.1)
     })
 
   }
@@ -216,9 +226,10 @@ class GameScene extends Phaser.Scene {
 
     //course end
     if(this.realTime <= this.courseLength){ 
-      this.gameSpeed = 1
+
       //create Dash
       if(this.createDashTimer >= 2 && this.realTime <= this.courseLength){
+
         let rng = Phaser.Math.Between(0,this.horses.length-1)
         
         let horse = this.horses[rng]
@@ -230,13 +241,16 @@ class GameScene extends Phaser.Scene {
           this.createDashTimer = 0;
         } 
       
-    }
+      }
+
       //background motion
       this.allBackgrounds.forEach(b => {
       b.background.tilePositionX += b.tileSpeed * this.gameSpeed
       })
-    } else {
+    } else { //FINISH
       this.finish_line = this.add.image(this.scale.width-20, this.scale.height*.6, 'finish_line').setScale(.4).setRotation(Phaser.Math.DegToRad(90)).setDepth(3).setAlpha(.8);
+      this.background1_finish = this.add.image(this.scale.width-20, this.scale.height*.4+20, 'background1_finish').setScale(.6).setDepth(4);
+            
       this.horses.forEach(h => {
         this.createFinish(h, true)
       })
