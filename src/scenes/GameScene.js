@@ -32,6 +32,12 @@ class GameScene extends Phaser.Scene {
     this.load.image('button_pause', '../assets/images/button_pause.png');
     this.load.image('finish_line', '../assets/images/finish_line.png');
     this.load.image('horse0_profile', '../assets/images/horse0_profile.png');
+    this.load.image('horse1_profile', '../assets/images/horse2_profile.png');
+    this.load.image('horse2_profile', '../assets/images/horse3_profile.png');
+    this.load.image('horse3_profile', '../assets/images/horse4_profile.png');
+    this.load.image('horse4_profile', '../assets/images/horse5_profile.png');
+
+
 
     this.load.atlas('table_result', '../assets/images/table_result.png', '../assets/images/table_result.json');
     
@@ -71,13 +77,14 @@ class GameScene extends Phaser.Scene {
     this.background_seats = this.add.tileSprite(0, 292, 0, 0, 'background1_seats').setDepth(3);
     this.background_trees = this.add.tileSprite(0, 330, 0, 0, 'background1_trees').setDepth(4);
     this.background_course = this.add.tileSprite(0, 492, 0, 0, 'background1_course').setDepth(3);
-    //this.background_course_mini = this.add.tileSprite(0, 75, 0, 0, 'background1_course').setDepth(4).setScale(.4,.435);
     this.background_fence = this.add.tileSprite(0, 365, 0, 0, 'background1_fence').setDepth(3);
     this.background_fence2 = this.add.tileSprite(0, 602, 0, 0, 'background1_fence').setDepth(3);
-    
+   
+    //results-gui
     this.add.image((width*.5) + 2, height*.885, 'table_result', 'gui-back').setOrigin(.5).setScale(.53,.278).setDepth(3)
     this.add.image((width*.5) + 2, 65, 'table_result', 'gui-back').setOrigin(.5).setScale(.53,.2).setDepth(3)
     this.add.image((width*.5) + 2, height*.88, 'table_result', 'gui-back2').setOrigin(.5).setScale(.55,.3).setDepth(3)
+   
     this.button_pause = this.add.image(width-20, 633, 'button_pause').setScale(.5).setDepth(4);
 
 
@@ -202,7 +209,8 @@ class GameScene extends Phaser.Scene {
     this.horses.forEach((h, index) => {
       let horseSprite = `horse${index}`
       createAnim(horseSprite)
-      this.add.image(100,20, `horse${index}_profile`).setDepth(4).setScale(.1)
+      //profile pics
+      this.add.image(30,660 + (index*30), `horse${index}_profile`).setDepth(4).setScale(.07)
     })
 
   }
