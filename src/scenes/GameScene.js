@@ -171,6 +171,7 @@ class GameScene extends Phaser.Scene {
         dashing: false,
         speed: 3,
         stamina: 1,
+        rank: 0
       },
       {
         horse: this.horse1,
@@ -178,6 +179,7 @@ class GameScene extends Phaser.Scene {
         dashing: false,
         speed: 1,
         stamina: 1,
+        rank: 0
       },
       {
         horse: this.horse2,
@@ -185,6 +187,7 @@ class GameScene extends Phaser.Scene {
         dashing: false,
         speed: 1,
         stamina: 1,
+        rank: 0
       },
       {
         horse: this.horse3,
@@ -192,6 +195,7 @@ class GameScene extends Phaser.Scene {
         dashing: false,
         speed: 1,
         stamina: 1,
+        rank: 0
       },
       {
         horse: this.horse4,
@@ -199,21 +203,23 @@ class GameScene extends Phaser.Scene {
         dashing: false,
         speed: 1,
         stamina: 1,
+        rank: 0
       },
     ]
 
     this.horsesCopy = [...this.horses];
-
-    this.sortByXPosition = (array) => {
-      array.sort(function(a, b) {
-          return a.horse.x - b.horse.x;
-      });
+    
+    this.customSort = (a, b) => {
+      if (a.horse.x < b.horse.x) return -1;
+      if (a.horse.x > b.horse.x) return 1;
+      return 0;
     }
 
     //animations and stats
     this.horses.forEach((h, index) => {
       let horseSprite = `horse${index}`
       createAnim(horseSprite)
+
       //profile pics
       this.add.image(30,660 + (index*30), `horse${index}_profile`).setDepth(4).setScale(.07)
       this.add.text(52,655 + (index*30), h.name).setDepth(4)
@@ -232,24 +238,40 @@ class GameScene extends Phaser.Scene {
     //text
     this.realtimeText.setText(`time: ${this.realTime.toFixed(2)}`).setDepth(5)
 
-    let rank = 1;
 
     //animations
     this.horses.forEach((h, index) => {
       h.horse.anims.play(`horse${index}-run`, true)
     })
 
-    this.horsesCopy.sort((a, b) => a.horse.x - b.horse.x);
-    console.log(this.horsesCopy)
-    
-    this.horsesCopy.forEach((h,index) => {
+    // Sort the horsesCopy array by x position
+    this.horsesCopy.sort(this.customSort);
 
-    this.add.text(this.scale.width * 0.9, 655 + index * 30, `Rank: ${rank}`).setDepth(4);
-    if (index < this.horses.length - 1 && horse.horse.x !== this.horses[index + 1].horse.x) {
-      rank++;
+    //console.log(this.horsesCopy);
+
+    if (!this.rankTextGroup) {
+      this.rankTextGroup = this.add.group();
     }
-  })
-  
+
+    this.rankTextGroup.clear(true, true);
+
+    let rank = 1;
+
+    // Loop through the sorted horsesCopy to update their display position and rank
+    this.horsesCopy.forEach((h, index) => {
+      
+      h.rank = rank;
+      // Check if there is a next horse and if their x position is different
+      if (index < this.horsesCopy.length - 1 && h.horse.x !== this.horsesCopy[index + 1].horse.x) {
+        rank++;
+      }
+
+      const yPosition = 655 + index * 30;
+      
+      //console.log(h.rank)
+      const rankText = this.add.text(this.scale.width * 0.8, yPosition, `Rank: ${h.rank}`).setDepth(4);
+      this.rankTextGroup.add(rankText);
+    });
     
     //race
     if(this.realTime <= this.courseLength){ 
