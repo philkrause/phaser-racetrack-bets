@@ -17,6 +17,7 @@ class GameScene extends Phaser.Scene {
     this.rngDash = false;
     this.createDash;
     this.courseLength;
+    this.sortByXPosition;
   }
 
   //PRELOAD===================================================================================
@@ -42,7 +43,7 @@ class GameScene extends Phaser.Scene {
     this.load.atlas('table_result', '../assets/images/table_result.png', '../assets/images/table_result.json');
     
     //length of course in seconds
-    this.courseLength = 5;
+    this.courseLength = 60;
 
     this.load.spritesheet('horse0', '../assets/images/horse1_sheet.png', {
       frameWidth: 432,
@@ -158,7 +159,6 @@ class GameScene extends Phaser.Scene {
       })
     }
 
-
     this.horse0 = this.physics.add.sprite(width * .5 - 100, (height * .5) - 20, 'horse0').setScale(.3).setDepth(4);
     this.horse1 = this.physics.add.sprite(width * .5 - 100, this.horse0.y + 40, 'horse1').setScale(.3).setDepth(4);
     this.horse2 = this.physics.add.sprite(width * .5 - 100, this.horse0.y + 80, 'horse2').setScale(.3).setDepth(4);
@@ -178,7 +178,6 @@ class GameScene extends Phaser.Scene {
         dashing: false,
         speed: 1,
         stamina: 1,
-
       },
       {
         horse: this.horse2,
@@ -186,7 +185,6 @@ class GameScene extends Phaser.Scene {
         dashing: false,
         speed: 1,
         stamina: 1,
-
       },
       {
         horse: this.horse3,
@@ -194,7 +192,6 @@ class GameScene extends Phaser.Scene {
         dashing: false,
         speed: 1,
         stamina: 1,
-
       },
       {
         horse: this.horse4,
@@ -203,14 +200,23 @@ class GameScene extends Phaser.Scene {
         speed: 1,
         stamina: 1,
       },
-
     ]
 
+    this.horsesCopy = [...this.horses];
+
+    this.sortByXPosition = (array) => {
+      array.sort(function(a, b) {
+          return a.horse.x - b.horse.x;
+      });
+    }
+
+    //animations and stats
     this.horses.forEach((h, index) => {
       let horseSprite = `horse${index}`
       createAnim(horseSprite)
       //profile pics
       this.add.image(30,660 + (index*30), `horse${index}_profile`).setDepth(4).setScale(.07)
+      this.add.text(52,655 + (index*30), h.name).setDepth(4)
     })
 
   }
@@ -226,13 +232,26 @@ class GameScene extends Phaser.Scene {
     //text
     this.realtimeText.setText(`time: ${this.realTime.toFixed(2)}`).setDepth(5)
 
-  
+    let rank = 1;
+
     //animations
     this.horses.forEach((h, index) => {
       h.horse.anims.play(`horse${index}-run`, true)
     })
 
-    //course end
+    this.horsesCopy.sort((a, b) => a.horse.x - b.horse.x);
+    console.log(this.horsesCopy)
+    
+    this.horsesCopy.forEach((h,index) => {
+
+    this.add.text(this.scale.width * 0.9, 655 + index * 30, `Rank: ${rank}`).setDepth(4);
+    if (index < this.horses.length - 1 && horse.horse.x !== this.horses[index + 1].horse.x) {
+      rank++;
+    }
+  })
+  
+    
+    //race
     if(this.realTime <= this.courseLength){ 
 
       //create Dash
