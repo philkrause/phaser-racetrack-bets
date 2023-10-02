@@ -18,7 +18,7 @@
     },
     {
       "filename": "rank_numbers",
-      "frame": {"x": 36, "y": 19, "w": 8, "h": 37 },
+      "frame": {"x": 427, "y": 197.5, "w": 105, "h": 445 },
       "rotated": false,
       "trimmed": false,
       "spriteSourceSize": {"x": 0, "y": 0, "w": 32, "h": 32},

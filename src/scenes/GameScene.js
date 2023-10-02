@@ -37,6 +37,7 @@ class GameScene extends Phaser.Scene {
     this.load.image('horse2_profile', '../assets/images/horse3_profile.png');
     this.load.image('horse3_profile', '../assets/images/horse4_profile.png');
     this.load.image('horse4_profile', '../assets/images/horse5_profile.png');
+    this.load.script('webfont', '//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js');
 
 
 
@@ -85,10 +86,8 @@ class GameScene extends Phaser.Scene {
     this.add.image((width*.5) + 2, height*.885, 'table_result', 'gui_back').setOrigin(.5).setScale(.53,.278).setDepth(3)
     this.add.image((width*.5) + 2, 65, 'table_result', 'gui_back').setOrigin(.5).setScale(.53,.2).setDepth(3)
     this.add.image((width*.5) + 2, height*.88, 'table_result', 'gui_back2').setOrigin(.5).setScale(.55,.3).setDepth(3)
-    this.add.image((width*.5) + 2, 65, 'table_result', 'rank_numbers').setOrigin(.5).setScale(1,1).setDepth(4)
 
     this.button_pause = this.add.image(width-20, 633, 'button_pause').setScale(.5).setDepth(4);
-
 
     this.allBackgrounds = [
       {
@@ -228,6 +227,8 @@ class GameScene extends Phaser.Scene {
 
     })
 
+    var style = { font: "28px Finger Paint", fill: "#fff", tabs: [ 150, 150, 200 ] };
+    this.add.text(2, height * .8 +5, "1\n2\n3\n4\n5", style).setDepth(5);
   }
 
   //UPDATE===================================================================================
@@ -265,8 +266,8 @@ class GameScene extends Phaser.Scene {
     
     // Loop through the sorted horsesCopy to update their display position and rank
     this.horsesCopy.forEach((h, index) => {
-      const profile = this.add.image(30,660 + (index*30), h.profilepic).setDepth(4).setScale(.07)
-      const name = this.add.text(52,655 + (index*30), h.name).setDepth(4)
+      const profile = this.add.image(48,660 + (index*30), h.profilepic).setDepth(4).setScale(.07)
+      const name = this.add.text(68 ,655 + (index*30), h.name).setDepth(4)
       this.rankTextGroup.add(name);
       this.rankProfileGroup.add(profile);
 
