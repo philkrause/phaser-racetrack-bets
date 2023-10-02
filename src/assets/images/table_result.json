@@ -1,7 +1,7 @@
 {
   "frames": [
     {
-      "filename": "gui-back",
+      "filename": "gui_back",
       "frame": {"x": 0, "y": 657.5, "w": 943, "h": 660},
       "rotated": false,
       "trimmed": false,
@@ -9,8 +9,16 @@
       "sourceSize": {"w": 1768, "h": 1739}
     },
     {
-      "filename": "gui-back2",
+      "filename": "gui_back2",
       "frame": {"x": 0, "y": 1317.5, "w": 860, "h": 424},
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {"x": 0, "y": 0, "w": 32, "h": 32},
+      "sourceSize": {"w": 1768, "h": 1739}
+    },
+    {
+      "filename": "rank_numbers",
+      "frame": {"x": 36, "y": 19, "w": 8, "h": 37 },
       "rotated": false,
       "trimmed": false,
       "spriteSourceSize": {"x": 0, "y": 0, "w": 32, "h": 32},

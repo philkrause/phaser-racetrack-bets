@@ -82,10 +82,11 @@ class GameScene extends Phaser.Scene {
     this.background_fence2 = this.add.tileSprite(0, 602, 0, 0, 'background1_fence').setDepth(3);
    
     //results-gui
-    this.add.image((width*.5) + 2, height*.885, 'table_result', 'gui-back').setOrigin(.5).setScale(.53,.278).setDepth(3)
-    this.add.image((width*.5) + 2, 65, 'table_result', 'gui-back').setOrigin(.5).setScale(.53,.2).setDepth(3)
-    this.add.image((width*.5) + 2, height*.88, 'table_result', 'gui-back2').setOrigin(.5).setScale(.55,.3).setDepth(3)
-   
+    this.add.image((width*.5) + 2, height*.885, 'table_result', 'gui_back').setOrigin(.5).setScale(.53,.278).setDepth(3)
+    this.add.image((width*.5) + 2, 65, 'table_result', 'gui_back').setOrigin(.5).setScale(.53,.2).setDepth(3)
+    this.add.image((width*.5) + 2, height*.88, 'table_result', 'gui_back2').setOrigin(.5).setScale(.55,.3).setDepth(3)
+    this.add.image((width*.5) + 2, 65, 'table_result', 'rank_numbers').setOrigin(.5).setScale(1,1).setDepth(4)
+
     this.button_pause = this.add.image(width-20, 633, 'button_pause').setScale(.5).setDepth(4);
 
 
@@ -120,7 +121,6 @@ class GameScene extends Phaser.Scene {
 
     //text
     this.realtimeText = this.add.bitmapText(10, 10, 'ccFont', '').setTint(this.red).setScale(.5).setScrollFactor(0).setDepth(2)
-
 
     //create animation function
     const createAnim = (sprite) => {
@@ -171,7 +171,8 @@ class GameScene extends Phaser.Scene {
         dashing: false,
         speed: 3,
         stamina: 1,
-        rank: 0
+        rank: 0,
+        profilepic: 'horse0_profile'
       },
       {
         horse: this.horse1,
@@ -179,7 +180,8 @@ class GameScene extends Phaser.Scene {
         dashing: false,
         speed: 1,
         stamina: 1,
-        rank: 0
+        rank: 0,
+        profilepic: 'horse1_profile'
       },
       {
         horse: this.horse2,
@@ -187,7 +189,8 @@ class GameScene extends Phaser.Scene {
         dashing: false,
         speed: 1,
         stamina: 1,
-        rank: 0
+        rank: 0,
+        profilepic: 'horse2_profile'
       },
       {
         horse: this.horse3,
@@ -195,7 +198,8 @@ class GameScene extends Phaser.Scene {
         dashing: false,
         speed: 1,
         stamina: 1,
-        rank: 0
+        rank: 0,
+        profilepic: 'horse3_profile'
       },
       {
         horse: this.horse4,
@@ -203,15 +207,16 @@ class GameScene extends Phaser.Scene {
         dashing: false,
         speed: 1,
         stamina: 1,
-        rank: 0
+        rank: 0,
+        profilepic: 'horse4_profile'
       },
     ]
 
     this.horsesCopy = [...this.horses];
     
     this.customSort = (a, b) => {
-      if (a.horse.x < b.horse.x) return -1;
-      if (a.horse.x > b.horse.x) return 1;
+      if (a.horse.x > b.horse.x) return -1;
+      if (a.horse.x < b.horse.x) return 1;
       return 0;
     }
 
@@ -220,9 +225,7 @@ class GameScene extends Phaser.Scene {
       let horseSprite = `horse${index}`
       createAnim(horseSprite)
 
-      //profile pics
-      this.add.image(30,660 + (index*30), `horse${index}_profile`).setDepth(4).setScale(.07)
-      this.add.text(52,655 + (index*30), h.name).setDepth(4)
+
     })
 
   }
@@ -246,31 +249,27 @@ class GameScene extends Phaser.Scene {
 
     // Sort the horsesCopy array by x position
     this.horsesCopy.sort(this.customSort);
-
-    //console.log(this.horsesCopy);
+    this.rankProfileGroup = this.add.group();
 
     if (!this.rankTextGroup) {
       this.rankTextGroup = this.add.group();
+
     }
+    if (!this.rankProfilleGroup) {
+      this.rankProfilleGroup = this.add.group();
 
+    }
+    
     this.rankTextGroup.clear(true, true);
-
-    let rank = 1;
-
+    this.rankProfileGroup.clear(true,true)
+    
     // Loop through the sorted horsesCopy to update their display position and rank
     this.horsesCopy.forEach((h, index) => {
-      
-      h.rank = rank;
-      // Check if there is a next horse and if their x position is different
-      if (index < this.horsesCopy.length - 1 && h.horse.x !== this.horsesCopy[index + 1].horse.x) {
-        rank++;
-      }
+      const profile = this.add.image(30,660 + (index*30), h.profilepic).setDepth(4).setScale(.07)
+      const name = this.add.text(52,655 + (index*30), h.name).setDepth(4)
+      this.rankTextGroup.add(name);
+      this.rankProfileGroup.add(profile);
 
-      const yPosition = 655 + index * 30;
-      
-      //console.log(h.rank)
-      const rankText = this.add.text(this.scale.width * 0.8, yPosition, `Rank: ${h.rank}`).setDepth(4);
-      this.rankTextGroup.add(rankText);
     });
     
     //race
