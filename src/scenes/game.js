@@ -81,7 +81,7 @@ class GameScene extends Phaser.Scene {
     this.background_course = this.add.tileSprite(0, 492, 0, 0, 'background1_course').setDepth(3);
     this.background_fence = this.add.tileSprite(0, 365, 0, 0, 'background1_fence').setDepth(3);
     this.background_fence2 = this.add.tileSprite(0, 602, 0, 0, 'background1_fence').setDepth(3);
-   
+
     //results-gui
     this.add.image((width*.5) + 2, height*.885, 'table_result', 'gui_back').setOrigin(.5).setScale(.53,.278).setDepth(3)
     this.add.image((width*.5) + 2, 65, 'table_result', 'gui_back').setOrigin(.5).setScale(.53,.2).setDepth(3)
