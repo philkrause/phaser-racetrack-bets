@@ -1,6 +1,7 @@
 import Handler from './scenes/handler.js'
 import Title from './scenes/title.js'
 import Preload from './scenes/preload.js'
+import Race from './scenes/race.js'
 import Hub from './scenes/hub.js'
 
 // Aspect Ratio 16:9 - Portrait
@@ -13,6 +14,13 @@ const SIZE_HEIGHT_SCREEN = 960
 
 const config = {
     type: Phaser.AUTO,
+    physics: {
+        default: 'arcade',
+        arcade: {
+            gravity: { y: 0 },
+            debug: false
+        }
+    },
     scale: {
         mode: Phaser.Scale.RESIZE,
         parent: 'game',
@@ -25,12 +33,12 @@ const config = {
         max: {
             width: MAX_SIZE_WIDTH_SCREEN,
             height: MAX_SIZE_HEIGHT_SCREEN
-        }
+        },
     },
     dom: {
         createContainer: true
     },
-    scene: [Handler, Hub, Preload, Title]
+    scene: [Handler, Hub, Preload, Title, Race]
 
 }
 

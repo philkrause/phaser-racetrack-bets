@@ -13,7 +13,7 @@ export default class Preload extends Phaser.Scene {
         // Images
         this.load.image('logo', 'assets/images/logo.png')
         this.load.image('guide', 'assets/images/540x960-guide.png')
-        this.load.image('button', 'assets/images/button.png')
+        //this.load.image('button', 'assets/images/button.png')
         //---------------------------------------------------------------------->
         this.canvasWidth = this.sys.game.canvas.width
         this.canvasHeight = this.sys.game.canvas.height
@@ -44,8 +44,8 @@ export default class Preload extends Phaser.Scene {
                 callback: () => {
                     this.sceneStopped = true
                     this.scene.stop('preload')
-                    this.handlerScene.cameras.main.setBackgroundColor("#120079")
-                    this.handlerScene.launchScene('title')
+                    this.handlerScene.cameras.main.setBackgroundColor("#0000")
+                    this.handlerScene.launchScene('race')
                 },
                 loop: false
             })

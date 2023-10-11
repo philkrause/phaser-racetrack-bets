@@ -87,6 +87,11 @@ export default class Hub extends Phaser.Scene {
             this.quitBtn.visible = false
             this.creditsTxt.visible = false
         } 
+        if (this.handlerScene.sceneRunning === 'game') {
+            this.soundBtn.visible = true
+            this.quitBtn.visible = false
+            this.creditsTxt.visible = false
+        } 
     }
 
     clickBackScene(sceneTxt) {

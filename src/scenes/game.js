@@ -1,9 +1,10 @@
 import { GAME_SPEED } from '../config/constants';
+import { inspect } from 'util'
 
 class GameScene extends Phaser.Scene {
-  constructor(config) {
+  constructor() {
     super({
-      key: 'GameSceneKey'
+      key: 'game'
     });
 
     this.gameSpeed = GAME_SPEED;
@@ -37,7 +38,7 @@ class GameScene extends Phaser.Scene {
     this.load.image('horse2_profile', '../assets/images/horse3_profile.png');
     this.load.image('horse3_profile', '../assets/images/horse4_profile.png');
     this.load.image('horse4_profile', '../assets/images/horse5_profile.png');
-    this.load.script('webfont', '//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js');
+    //this.load.script('webfont', '//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js');
 
 
 
@@ -66,7 +67,7 @@ class GameScene extends Phaser.Scene {
       frameWidth: 432,
       frameHeight: 321
     });
-    this.load.bitmapFont('ccFont', '../assets/fonts/carrier_command.png', '../assets/fonts/carrier_command.xml');
+    //this.load.bitmapFont('ccFont', '../assets/fonts/carrier_command.png', '../assets/fonts/carrier_command.xml');
 
   }
 
@@ -119,7 +120,7 @@ class GameScene extends Phaser.Scene {
     ]
 
     //text
-    this.realtimeText = this.add.bitmapText(10, 10, 'ccFont', '').setTint(this.red).setScale(.5).setScrollFactor(0).setDepth(2)
+    //this.realtimeText = this.add.bitmapText(10, 10, 'ccFont', '').setTint(this.red).setScale(.5).setScrollFactor(0).setDepth(2)
 
     //create animation function
     const createAnim = (sprite) => {
@@ -157,7 +158,7 @@ class GameScene extends Phaser.Scene {
         duration: 700,
       })
     }
-
+    inspect(this)
     this.horse0 = this.physics.add.sprite(width * .5 - 100, (height * .5) - 20, 'horse0').setScale(.3).setDepth(4);
     this.horse1 = this.physics.add.sprite(width * .5 - 100, this.horse0.y + 40, 'horse1').setScale(.3).setDepth(4);
     this.horse2 = this.physics.add.sprite(width * .5 - 100, this.horse0.y + 80, 'horse2').setScale(.3).setDepth(4);
@@ -240,7 +241,7 @@ class GameScene extends Phaser.Scene {
     this.createDashTimer += 1/60
 
     //text
-    this.realtimeText.setText(`time: ${this.realTime.toFixed(2)}`).setDepth(5)
+    //this.realtimeText.setText(`time: ${this.realTime.toFixed(2)}`).setDepth(5)
 
 
     //animations
