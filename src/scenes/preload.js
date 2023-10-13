@@ -44,7 +44,7 @@ export default class Preload extends Phaser.Scene {
                 callback: () => {
                     this.sceneStopped = true
                     this.scene.stop('preload')
-                    this.handlerScene.cameras.main.setBackgroundColor("#0000")
+                    this.handlerScene.cameras.main.setBackgroundColor("#FFFFF")
                     this.handlerScene.launchScene('race')
                 },
                 loop: false

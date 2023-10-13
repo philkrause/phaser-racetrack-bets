@@ -87,7 +87,7 @@ export default class Hub extends Phaser.Scene {
             this.quitBtn.visible = false
             this.creditsTxt.visible = false
         } 
-        if (this.handlerScene.sceneRunning === 'game') {
+        if (this.handlerScene.sceneRunning === 'race') {
             this.soundBtn.visible = true
             this.quitBtn.visible = false
             this.creditsTxt.visible = false
