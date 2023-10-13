@@ -40,8 +40,6 @@ class GameScene extends Phaser.Scene {
     this.load.image('horse4_profile', '../assets/images/horse5_profile.png');
     //this.load.script('webfont', '//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js');
 
-
-
     this.load.atlas('table_result', '../assets/images/table_result.png', '../assets/images/table_result.json');
     
     //length of course in seconds

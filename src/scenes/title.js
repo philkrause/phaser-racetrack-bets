@@ -13,7 +13,6 @@ export default class Title extends Phaser.Scene {
         this.width = this.game.screenBaseSize.width
         this.height = this.game.screenBaseSize.height
         this.handlerScene = this.scene.get('handler')
-        this.handlerScene.sceneRunning = 'title'
         this.load.image('title', '../assets/images/title_540x960.png');
         this.load.image('play', '../assets/images/button_play.png');
 

@@ -14,6 +14,7 @@ const SIZE_HEIGHT_SCREEN = 960
 
 const config = {
     type: Phaser.AUTO,
+    pixelArt: true,
     physics: {
         default: 'arcade',
         arcade: {
