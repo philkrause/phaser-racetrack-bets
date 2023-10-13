@@ -286,6 +286,7 @@ class GameScene extends Phaser.Scene {
         if(!horseDashing){        
           this.horses[rng].dashing = true;
           this.createDash(horse, 1000)
+          //reset dash timer
           this.createDashTimer = 0;
         } 
       
@@ -296,7 +297,7 @@ class GameScene extends Phaser.Scene {
       b.background.tilePositionX += b.tileSpeed * this.gameSpeed
       })
     } else { //FINISH
-      this.finish_line = this.add.image(this.scale.width-20, this.scale.height*.6, 'finish_line').setScale(.4).setRotation(Phaser.Math.DegToRad(90)).setDepth(3).setAlpha(.8);
+      this.finish_line = this.add.image(this.scale.width-20, this.background_fence.y, 'finish_line').setScale(.4).setRotation(Phaser.Math.DegToRad(90)).setDepth(3).setAlpha(.8);
       this.background1_finish = this.add.image(this.scale.width-20, this.scale.height*.4+20, 'background1_finish').setScale(.6).setDepth(4);
             
       this.horses.forEach(h => {
