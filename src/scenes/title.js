@@ -1,8 +1,11 @@
 export default class Title extends Phaser.Scene {
 
     // Vars
-    handlerScene = false
+    width = null
+    height = null
+    handlerScene = null
     sceneStopped = false
+
 
     constructor() {
         super({ key: 'title' })
@@ -33,8 +36,9 @@ export default class Title extends Phaser.Scene {
         // });
         // GAME OBJECTS 
 
-        this.playBtn = this.add.image(width / 2, height * .8, 'play').setOrigin(.5).setDepth(3).setScale(.5).setInteractive();
+        this.playBtn = this.add.image(width / 2, height * .9, 'play').setOrigin(.5).setDepth(3).setScale(.8).setInteractive();
         this.playBtn.on('pointerdown', () => {
+            this.sceneStopped = true
             this.scene.stop('title')
             this.handlerScene.launchScene('race')});
     }

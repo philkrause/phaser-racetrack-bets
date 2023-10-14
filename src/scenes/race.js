@@ -1,23 +1,22 @@
 export default class Race extends Phaser.Scene {
 
   // Vars
-  handlerScene = false
-  sceneStopped = false
+  handlerScene = null
+
 
   constructor() {
       super({ key: 'race' })
       this.realTime = 0;
       this.createDashTimer = 0;
+      this.finish = false;
   }
 
   preload() {
       this.sceneStopped = false
       this.width = this.game.screenBaseSize.width
       this.height = this.game.screenBaseSize.height
-      this.handlerScene = this.scene.get('handler')
-      this.handlerScene.sceneRunning = 'race'
-
-      this.courseLength = 10
+      this.handlerScene = this.scene.get('handler')      
+      
 
       this.load.image('background1_clouds', '../assets/images/background1_clouds.png');
       this.load.image('background1_seats', '../assets/images/background1_seats.png');
@@ -53,21 +52,17 @@ export default class Race extends Phaser.Scene {
         frameWidth: 432,
         frameHeight: 321
       });
-      
+
+      //vars
+      this.courseLength = 5;
+      this.finish = false;
   }
 
   create() {
       const { width, height } = this
-      // CONFIG SCENE         
+      // CONFIG SCENE        
       this.handlerScene.updateResize(this)
-      this.canvasWidth = this.sys.game.canvas.width
-      this.canvasHeight = this.sys.game.canvas.height
-
-      this.width = this.game.screenBaseSize.width
-      this.height = this.game.screenBaseSize.height
-
-      this.handlerScene = this.scene.get('handler')
-      this.handlerScene.sceneRunning = 'race'
+      
       if (this.game.debugMode)
           this.add.image(0, 0, 'guide').setOrigin(0).setDepth(4)
         
@@ -175,36 +170,55 @@ export default class Race extends Phaser.Scene {
   ]
 
 
-    //animations and stats
+    //loop through horses and add necessary anim/images
     this.horses.forEach((h, index) => {
       createAnim(`horse${index}`)
       this.add.image(70, (this.background_fence2.y + 60) + (80*index), h.profilepic).setScale(.18).setDepth(6)
     })
 
-    //dashing
+    //ANIMATIONS-----------------------------------------
+    
+    //dash
     this.createDash = (sprite, delay) => {
+      const horse = sprite.horse;
       this.tweens.add({
-        targets: [sprite.horse],
+        targets: [horse],
         x: 300,
         duration: 6000,
         hold: 700,
         loopDelay: delay,
         onComplete: () => {
           sprite.dashing = false
-          sprite.destroy();
         },
         yoyo: true,
       })
     }
-    
+
+    //animation for the finish
     this.createFinish = (sprite) => {
+      const horse = sprite.horse;
       this.tweens.add({
-        targets: [sprite.horse],
-        x: 700,
+        targets: [horse],
+        x: 1000,
         duration: 700,
+        onComplete: () => {
+          sprite.dashing = false
+          horse.destroy();
+        },
       })
     }
 
+    //creating the finish line assets
+    this.finish_line = () => { 
+      this.background1_finish = this.add.image(this.scale.width-70, this.background_fence.y - 10, 'background1_finish').setScale(.6).setDepth(4);
+      this.add.image(this.scale.width-70, this.background_course.y - 10, 'finish_line')
+      .setScale(.4)
+      .setRotation(Phaser.Math.DegToRad(90))
+      .setDepth(3)
+      .setAlpha(.8);
+    }
+
+    //text
     this.timer = this.add.text(
       this.width/2,
       this.height * .8, 
@@ -212,6 +226,7 @@ export default class Race extends Phaser.Scene {
     {
       fontFamily: 'font1',
     });
+    this.timer.setFontSize(24)
   }
 
   
@@ -220,41 +235,40 @@ export default class Race extends Phaser.Scene {
     this.realTime += 1/60
     this.createDashTimer += 1/60
     this.timer.setText(`time: ${(this.realTime).toFixed(2)}`)
-    //animations
-    this.horses.forEach((h, index) => {
-      h.horse.anims.play(`horse${index}-run`, true)
-    })
-
-    //if race is still continues
-    if(this.realTime <= this.courseLength){ 
-
-      //create Dash
-      if(this.createDashTimer >= 2 && this.realTime <= this.courseLength){
-
-        let rng = Phaser.Math.Between(0,this.horses.length-1)
-        
-        let horse = this.horses[rng]
-        let horseDashing = this.horses[rng].dashing;
-
-        if(!horseDashing){
-          this.horses[rng].dashing = true;
-          this.createDash(horse, 1000)
-          this.createDashTimer = 0;
-        } 
+     
+    this.realTime <= this.courseLength ? this.finish = false : this.finish = true;
+   
+    //if race ongoing
+    if(this.finish == false){ 
       
-      }
+      //animations
+      this.horses.forEach((h, index) => h.horse.anims.play(`horse${index}-run`, true))
+      
+      //create Dash
+        if(this.createDashTimer >= 2){
 
-      //background motion
-      this.allBackgrounds.forEach(b => {
-      b.background.tilePositionX += b.tileSpeed
-      })
-    } else { //FINISH
-      this.finish_line = this.add.image(this.scale.width-20, this.background_course.y - 10, 'finish_line').setScale(.4).setRotation(Phaser.Math.DegToRad(90)).setDepth(3).setAlpha(.8);
-      this.background1_finish = this.add.image(this.scale.width-20, this.background_fence.y - 10, 'background1_finish').setScale(.6).setDepth(4);
-            
-      this.horses.forEach(h => {
-        this.createFinish(h, true)
-      })
+          let rng = Phaser.Math.Between(0,this.horses.length-1)
+          
+          let horse = this.horses[rng]
+          let horseDashing = this.horses[rng].dashing;
+
+          if(!horseDashing){
+            this.horses[rng].dashing = true;
+            this.createDash(horse, 1000)
+            this.createDashTimer = 0;
+          } 
+        
+        }
+
+        //background motion
+        this.allBackgrounds.forEach(b => {
+        b.background.tilePositionX += b.tileSpeed
+        })
+    }
+    if (this.finish == true) {
+      //Create Finish Line
+        this.horses.forEach(h => this.createFinish(h, true));
+        this.finish_line();
     }
   }
 

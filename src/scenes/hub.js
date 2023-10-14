@@ -103,6 +103,9 @@ export default class Hub extends Phaser.Scene {
             case "title":
                 this.creditsTxt.visible = false
                 return
+            case "race":
+                this.creditsTxt.visible = false
+                return
         }
 
         scene.sceneStopped = true
