@@ -35,7 +35,7 @@ export default class Title extends Phaser.Scene {
 
         this.playBtn = this.add.image(width / 2, height * .8, 'play').setOrigin(.5).setDepth(3).setScale(.5).setInteractive();
         this.playBtn.on('pointerdown', () => {
-            this.handlerScene.launchScene('game')
-        });
+            this.scene.stop('title')
+            this.handlerScene.launchScene('race')});
     }
 }

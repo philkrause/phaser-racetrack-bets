@@ -148,7 +148,6 @@ class GameScene extends Phaser.Scene {
       })
     }
 
-
     this.createFinish = (sprite) => {
       this.tweens.add({
         targets: [sprite.horse],
@@ -156,6 +155,7 @@ class GameScene extends Phaser.Scene {
         duration: 700,
       })
     }
+
     inspect(this)
     this.horse0 = this.physics.add.sprite(width * .5 - 100, (height * .5) - 20, 'horse0').setScale(.3).setDepth(4);
     this.horse1 = this.physics.add.sprite(width * .5 - 100, this.horse0.y + 40, 'horse1').setScale(.3).setDepth(4);
@@ -222,7 +222,7 @@ class GameScene extends Phaser.Scene {
     this.horses.forEach((h, index) => {
       let horseSprite = `horse${index}`
       createAnim(horseSprite)
-
+      this.add.image(h.profilepic)
 
     })
 
@@ -240,7 +240,6 @@ class GameScene extends Phaser.Scene {
 
     //text
     //this.realtimeText.setText(`time: ${this.realTime.toFixed(2)}`).setDepth(5)
-
 
     //animations
     this.horses.forEach((h, index) => {
