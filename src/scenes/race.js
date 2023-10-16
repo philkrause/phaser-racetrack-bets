@@ -26,13 +26,14 @@ export default class Race extends Phaser.Scene {
       this.load.image('background1_fence', '../assets/images/background1_fence.png');
       this.load.image('background1_finish', '../assets/images/background1_finish.png');
       this.load.image('background_title', '../assets/images/background_title.png');
-      this.load.image('background_ui', '../assets/images/background_ui2.png');
+      this.load.image('background_ui', '../assets/images/newui-crop3.png');
       this.load.image('horse0_profile', '../assets/images/horse0_profile.png');
       this.load.image('horse1_profile', '../assets/images/horse2_profile.png');
       this.load.image('horse2_profile', '../assets/images/horse3_profile.png');
       this.load.image('horse3_profile', '../assets/images/horse4_profile.png');
       this.load.image('horse4_profile', '../assets/images/horse5_profile.png');
       this.load.image('finish_line', '../assets/images/finish_line.png');
+
 
 
       this.load.spritesheet('horse0', '../assets/images/horse1_sheet.png', {
@@ -76,7 +77,7 @@ export default class Race extends Phaser.Scene {
       this.background_course = this.add.tileSprite(this.width/2, this.background_clouds.y + 235, 0, 0, 'background1_course').setDepth(3);
       this.background_fence = this.add.tileSprite(this.width/2, this.background_clouds.y + 115, 0, 0, 'background1_fence').setDepth(5);
       this.background_fence2 = this.add.tileSprite(this.width/2, this.background_clouds.y + 340, 0, 0, 'background1_fence').setDepth(5);
-      this.background_ui = this.add.image(this.width/2,this.background_fence2.y + 245,'background_ui')
+      this.background_ui = this.add.image(this.width/2,this.background_fence2.y + 270,'background_ui')
       //this.background_title = this.add.image(this.width/2,0,'background_title')
       
     this.allBackgrounds = [
@@ -174,16 +175,16 @@ export default class Race extends Phaser.Scene {
     }
   ]
 
-
+    //image/Text logic ---------------------------------------
     //loop through horses and add necessary anim/images
     this.horses.forEach((h, index) => {
       createAnim(`horse${index}`)
       this.add.image(105, (this.background_fence2.y + 60) + (100*index), h.profilepic).setScale(.18).setDepth(6)
       //names iu
-      let nameText = this.add.text(
+      this.add.text(
         180,
-        (this.background_fence2.y + 65) + (101*index), 
-        `${h.name}`).setFontSize(32).setColor();
+        (this.background_fence2.y + 35) + (101*index), 
+        `${h.name}`,{ fontFamily: 'font1', fill: '#00ff00' }).setFontSize(32).setColor('#FFFFFF').setShadow(3, 3, 'rgba(0,0,0,0.5)', 5);
     })
 
     //ANIMATIONS-----------------------------------------
