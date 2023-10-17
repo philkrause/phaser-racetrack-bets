@@ -9,6 +9,7 @@ export default class Race extends Phaser.Scene {
       this.realTime = 0;
       this.createDashTimer = 0;
       this.finish = false;
+      this.winner_finish = false;
   }
 
   preload() {
@@ -185,7 +186,15 @@ export default class Race extends Phaser.Scene {
         180,
         (this.background_fence2.y + 35) + (101*index), 
         `${h.name}`,{ fontFamily: 'font1', fill: '#00ff00' }).setFontSize(32).setColor('#FFFFFF').setShadow(3, 3, 'rgba(0,0,0,0.5)', 5);
-    })
+    
+        let horseFinishes = this.physics.overlap(h.horse, this.finish_line);
+        if(horseFinishes && this.winner_finish == false) {
+          console.log()
+
+          this.add.text(this.width/2,this.height/2,`WINNER : ${h.name}`)
+          this.winner_finish = true;
+        } 
+      })
 
     //ANIMATIONS-----------------------------------------
     
