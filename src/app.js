@@ -46,7 +46,7 @@ const config = {
 const game = new Phaser.Game(config)
 
 // Global
-game.debugMode = true
+game.debugMode = false
 game.embedded = false // game is embedded into a html iframe/object
 
 game.screenBaseSize = {

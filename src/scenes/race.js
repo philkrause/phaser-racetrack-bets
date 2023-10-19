@@ -88,23 +88,23 @@ export default class Race extends Phaser.Scene {
         },
         {
           background:this.background_seats,
-          tileSpeed: 4,
+          tileSpeed: 2,
         },
         {
           background: this.background_trees,
-          tileSpeed: 5,
+          tileSpeed: 4,
         },
         {
           background:this.background_course,
-          tileSpeed: 7,
+          tileSpeed: 8,
         },      
         {
           background: this.background_fence,
-          tileSpeed: 7,
+          tileSpeed: 8,
         },      
         {
           background: this.background_fence2,
-          tileSpeed: 7,
+          tileSpeed: 8,
         },
       ]
 
@@ -149,7 +149,7 @@ export default class Race extends Phaser.Scene {
     },
     {
       horse: this.horse2,
-      name: 'April',
+      name: 'Rufus',
       dashing: false,
       speed: 1,
       stamina: 1,
@@ -177,17 +177,20 @@ export default class Race extends Phaser.Scene {
   ]
 
     //image/Text logic ---------------------------------------
-    //loop through horses and add necessary anim/images
     this.horses.forEach((h, index) => {
       createAnim(`horse${index}`)
-      this.add.image(105, (this.background_fence2.y + 60) + (100*index), h.profilepic).setScale(.18).setDepth(6)
+      
+      //profile pics
+      this.add.image(105, (this.background_fence2.y + 55) + (108*index), h.profilepic).setScale(.18).setDepth(6)
       //names iu
       this.add.text(
-        180,
-        (this.background_fence2.y + 35) + (101*index), 
+        170,
+        (this.background_fence2.y + 35) + (110*index), 
         `${h.name}`,{ fontFamily: 'font1', fill: '#00ff00' }).setFontSize(32).setColor('#FFFFFF').setShadow(3, 3, 'rgba(0,0,0,0.5)', 5);
     
         let horseFinishes = this.physics.overlap(h.horse, this.finish_line);
+        
+        //Create winner TODO
         if(horseFinishes && this.winner_finish == false) {
           console.log()
 
