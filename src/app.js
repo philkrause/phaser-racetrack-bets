@@ -3,6 +3,7 @@ import Title from './scenes/title.js'
 import Preload from './scenes/preload.js'
 import Race from './scenes/race.js'
 import Hub from './scenes/hub.js'
+import Pick from './scenes/pick.js'
 
 // Aspect Ratio 16:9 - Portrait
 const MAX_SIZE_WIDTH_SCREEN = 1920
@@ -39,7 +40,7 @@ const config = {
     dom: {
         createContainer: true
     },
-    scene: [Handler, Hub, Preload, Title, Race]
+    scene: [Handler, Hub, Preload, Title, Pick, Race]
 
 }
 

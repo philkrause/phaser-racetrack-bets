@@ -29,7 +29,7 @@ export default class Race extends Phaser.Scene {
       this.load.image('background_title', '../assets/images/background_title.png');
       this.load.image('background_ui', '../assets/images/newui-crop3.png');
       this.load.image('horse0_profile', '../assets/images/horse0_profile.png');
-      this.load.image('horse1_profile', '../assets/images/horse2_profile.png');
+      this.load.image('horse1_profile', '../assets/images/horse1_profile.png');
       this.load.image('horse2_profile', '../assets/images/horse3_profile.png');
       this.load.image('horse3_profile', '../assets/images/horse4_profile.png');
       this.load.image('horse4_profile', '../assets/images/horse5_profile.png');
