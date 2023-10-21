@@ -78,12 +78,34 @@ export default class Pick extends Phaser.Scene {
 
 
         this.horses.forEach((horse, index) => {
-            this.add.image((this.width/2) - 55, (this.height * .299) + (index*85), horse.profilepic).setScale(.18).setDepth(2);
+            this.add.image((this.width/2) - 55, (this.height * .299) + (index*85), horse.profilepic).setScale(.18).setDepth(2).setInteractive();
              this.add.text(
                 (this.width/2) + 50,
                 (this.height * .299) + (index*85), 
-                `${horse.name}`,{ fontFamily: 'font1', fill: '#00ff00' }).setFontSize(32).setColor('#FFFFFF').setShadow(3, 3, 'rgba(0,0,0,0.5)', 5).setDepth(2);
-            
+                `${horse.name}`,{ fontFamily: 'font1', fill: '#00ff00' })
+                .setFontSize(32).setColor('#FFFFFF').setShadow(3, 3, 'rgba(0,0,0,0.5)', 5).setDepth(2);
+              
             })
+
+
+
+        const placebetText = this.add.text(
+          (this.width/2),
+          (this.height * .17), 
+          "Place your Bets!",{ fontFamily: 'font1', fill: '#00ff00' })
+          .setFontSize(48).setColor('#FFFFFF').setShadow(3, 3, 'rgba(0,0,0,0.5)', 5).setDepth(2).setOrigin(.5);
+
+          this.tweens.add({
+            targets: [placebetText],
+            scale: {
+                from: .7,
+                to: .8,
+                },
+            duration: 1000,
+            yoyo: true,
+            repeat: -1,
+            ease: 'Linear'
+            })
+    
     }
 }
