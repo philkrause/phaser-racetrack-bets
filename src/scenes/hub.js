@@ -33,7 +33,7 @@ export default class Hub extends Phaser.Scene {
 
         let posItemHubBase = 32
         this.quitBtn = this.add.image(posItemHubBase, posItemHubBase, "quit").setOrigin(.5).setDepth(1).setInteractive({ cursor: "pointer" })
-        this.quitBtn.visible = false
+        this.quitBtn.visible = true
 
         this.pointerUp(() => {
             this.clickBackScene(this.handlerScene.sceneRunning)
@@ -41,7 +41,7 @@ export default class Hub extends Phaser.Scene {
 
         let multiplePosY = this.game.embedded ? 1 : 3
         this.soundBtn = this.add.image(this.canvasWidth - posItemHubBase, posItemHubBase * multiplePosY, "sound").setOrigin(.5).setDepth(1).setInteractive({ cursor: "pointer" })
-        this.soundBtn.visible = false
+        this.soundBtn.visible = true
 
         if (this.game.debugMode) {
 

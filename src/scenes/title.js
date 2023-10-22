@@ -37,7 +37,8 @@ export default class Title extends Phaser.Scene {
         this.playBtn.on('pointerdown', () => {
             this.sceneStopped = true
             this.scene.stop('title')
-            this.handlerScene.launchScene('pick')});
+            this.handlerScene.launchScene('pick')
+        });
         
         this.tweens.add({
             targets: [this.playBtn],
