@@ -59,7 +59,7 @@ export default class Race extends Phaser.Scene {
       });
 
       //vars
-      this.courseLength = 30;
+      this.courseLength = 5;
       this.finish = false;
   }
 
@@ -176,6 +176,7 @@ export default class Race extends Phaser.Scene {
     }
   ]
 
+
     //image/Text logic ---------------------------------------
     this.horses.forEach((h, index) => {
       createAnim(`horse${index}`)
@@ -187,17 +188,9 @@ export default class Race extends Phaser.Scene {
         170,
         (this.background_fence2.y + 35) + (110*index), 
         `${h.name}`,{ fontFamily: 'font1', fill: '#00ff00' }).setFontSize(32).setColor('#FFFFFF').setShadow(3, 3, 'rgba(0,0,0,0.5)', 5);
-    
-        let horseFinishes = this.physics.overlap(h.horse, this.finish_line);
-        
-        //Create winner TODO
-        if(horseFinishes && this.winner_finish == false) {
-          console.log()
+      
+    })
 
-          this.add.text(this.width/2,this.height/2,`WINNER : ${h.name}`)
-          this.winner_finish = true;
-        } 
-      })
 
     //ANIMATIONS-----------------------------------------
     
@@ -218,7 +211,7 @@ export default class Race extends Phaser.Scene {
     }
 
     //animation for the finish
-    this.createFinish = (sprite) => {
+    this.createFinishDash = (sprite) => {
       const horse = sprite.horse;
       this.tweens.add({
         targets: [horse],
@@ -234,12 +227,11 @@ export default class Race extends Phaser.Scene {
     //creating the finish line assets
     this.finish_line = () => { 
       this.background1_finish = this.add.image(this.width-70, this.background_fence.y - 10, 'background1_finish').setScale(.6).setDepth(4);
-      this.add.image(this.width-70, this.background_course.y - 10, 'finish_line')
+      this.finish_line_sprite = this.add.image(this.width-70, this.background_course.y - 10, 'finish_line')
       .setScale(.4)
       .setRotation(Phaser.Math.DegToRad(90))
       .setDepth(3)
       .setAlpha(.8);
-      this.finish_line_bool = true;
     }
 
     //text
@@ -251,9 +243,17 @@ export default class Race extends Phaser.Scene {
       fontFamily: 'font1',
     });
     this.timer.setFontSize(24)
+
+
+    this.pickWinner = (horse, finish) => {
+      this.physics.overlap(horse, finish);
+      this.winner_finish = true;
+    }
+
+
   }
 
-  
+  //UPDATE-----------------------------------------
   update() {
 
     this.realTime += 1/60
@@ -267,7 +267,9 @@ export default class Race extends Phaser.Scene {
     if(this.finish == false){ 
       
       //animations
-      this.horses.forEach((h, index) => h.horse.anims.play(`horse${index}-run`, true))
+      this.horses.forEach((h, index) => {
+        h.horse.anims.play(`horse${index}-run`, true)
+      })
       
       //create Dash
         if(this.createDashTimer >= 2){
@@ -292,8 +294,16 @@ export default class Race extends Phaser.Scene {
     }
     if (this.finish == true) {
       //Create Finish Line
-        this.horses.forEach(h => this.createFinish(h, true));
-        this.finish_line()
+      this.finish_line()
+      this.horses.forEach(h => {
+        
+        this.createFinishDash(h, true)
+        console.log(this.finish_line_sprite)
+        this.pickWinner(h.horse, this.finish_line_sprite)
+
+      });
+        
+ 
     }
   }
 
