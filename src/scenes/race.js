@@ -10,6 +10,9 @@ export default class Race extends Phaser.Scene {
       this.createDashTimer = 0;
       this.finish = false;
       this.winner_finish = false;
+      this.stars = null;
+      this.width = null;
+      this.height = null;
   }
 
   preload() {
@@ -245,20 +248,33 @@ export default class Race extends Phaser.Scene {
     this.add.text(this.width/2, this.height/2, "test").setDepth(10);
     // stars-----------------------------------------
     this.createStars = () => {
-      this.stars = this.physics.add.group({
-          key: 'star',
-          repeat: 100,
-          setXY: { x: 200, y: 0, stepX: 0 }
-      });
 
-    //star movement
-      this.stars.children.iterate(function (child) {
-          child.x = 0;
-          child.setCollideWorldBounds(false,1,1);
-          child.setVelocity(Phaser.Math.Between(-400, 400), 100);
-          child.setDepth(6);
-      });
+        this.stars = this.physics.add.group({
+            key: 'star',
+            repeat: 1,
+            setXY: { x: 0, y: 0, stepX: 0}
+          });
+
+        this.time.addEvent({
+          delay: 30,
+          callback: this.spawnStar,
+          callbackScope: this,
+          loop: true
+        });
     }
+
+    this.spawnStar=()=> {
+      var x = Phaser.Math.Between(0, this.width);
+      var y = 0;
+  
+      var star = this.stars.create(x, this.height/4, 'star'); 
+      star.setCollideWorldBounds(false, 1, 1);
+      star.setDepth(6);
+      star.setGravityY(1000);
+      star.setVelocity(Phaser.Math.Between(-400, 400), -200);
+      star.outOfBoundsKill = true;
+    }
+  
 
   }
 
@@ -311,17 +327,24 @@ export default class Race extends Phaser.Scene {
       //change the horse animation
       this.horses.forEach(h  => {
 
-
-        this.createFinishDash(h, true)
-        
+        //create dash animation
+        this.createFinishDash(h,true)
+        //choose winner based on x position
         if(h.horse.x >= 221 && !this.winner_finish) {
           console.log(`${h.name} is the winner!`)
+          //create winner animation
           this.createStars();
           this.winner_finish = true;
+          
         }
         
       })
     }
+
+    //TODO: create a function to stop the scene
+
+
+
   }
 
 }
