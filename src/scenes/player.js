@@ -1,5 +1,6 @@
 class Player {
     constructor() {
+        //defaults
         this.stats = {
             cash: 1000,
             horsebeton: "",
@@ -10,8 +11,7 @@ class Player {
     setUpPlayer(){
         localStorage.setItem("cash", this.stats.cash);
         localStorage.setItem("horsebeton", this.stats.horsebeton);
-        localStorage.setItem("firstgame", this.stats.firstgame);      
-        localStorage.setItem("bet", 0);
+        localStorage.setItem("firstgame", this.stats.firstgame);
     }
 
     getCash() {
@@ -36,7 +36,6 @@ class Player {
 
     setHorseBetOn(horse) {
         localStorage.setItem("horsebeton", horse);
-        this.stats.horsebeton = horse;
     }
 
     isFirstGame() {

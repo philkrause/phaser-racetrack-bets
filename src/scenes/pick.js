@@ -1,17 +1,13 @@
 import Player from './player';
-
+import Horses from './horses';
 
 export default class Pick extends Phaser.Scene {
   
-  // Vars
-    width = null
-    height = null
-    handlerScene = null
-    sceneStopped = false
 
     constructor() {
         super({ key: 'pick' })
         this.player = new Player();
+        this.horsesClass = new Horses();
         this.horseSelected = false;
         this.cashArrowUp;
         this.betCash = 0;
@@ -22,7 +18,7 @@ export default class Pick extends Phaser.Scene {
         this.sceneStopped = false
         this.width = this.game.screenBaseSize.width
         this.height = this.game.screenBaseSize.height
-        this.cash = 0;
+        this.cash = 1000;
         this.handlerScene = this.scene.get('handler')
         this.load.image('ui', '../assets/images/bet_ui.png');
         this.load.image('checkmark', '../assets/images/checkmark.png');
@@ -35,8 +31,6 @@ export default class Pick extends Phaser.Scene {
     }
 
     create() {
-        this.player.setUpPlayer();
-        this.cash = 1000;
         console.log(`Starting Cash ${this.cash}`)
         const { width, height } = this
         
@@ -49,7 +43,7 @@ export default class Pick extends Phaser.Scene {
         this.background = this.add.image(width / 2, height / 2,'ui').setOrigin().setDepth(1)
 
         //cash text
-        this.cashText = this.add.text(width *.2, height *.85, 'Cash: $' + this.cash, { fontFamily: 'font1', fill: '#00FF00' })
+        this.cashText = this.add.text(width *.25, height *.85, 'Cash: $' + this.cash, { fontFamily: 'font1', fill: '#00FF00' })
           .setFontSize(50)
           .setColor('#FFFFFF')
           .setShadow(3, 3, 'rgba(0,0,0,0.5)', 5)
@@ -58,17 +52,17 @@ export default class Pick extends Phaser.Scene {
           .setAlign('center');
 
         //betamount text
-        this.betText = this.add.text(width * .7, height *.85, 'Bet : $' + this.betCash, { fontFamily: 'font1', fill: '#00FF00' })
-        .setFontSize(50)
-        .setColor('#FFFFFF')
-        .setShadow(3, 3, 'rgba(0,0,0,0.5)', 5)
-        .setDepth(2)
-        .setOrigin(.5)
-        .setAlign('center');
+        this.betText = this.add.text(width * .68, height *.85, 'Bet : $' + this.betCash, { fontFamily: 'font1', fill: '#00FF00' })
+          .setFontSize(50)
+          .setColor('#FFFFFF')
+          .setShadow(3, 3, 'rgba(0,0,0,0.5)', 5)
+          .setDepth(2)
+          .setOrigin(.5)
+          .setAlign('center');
 
 
           //cash arrow
-        this.cashArrowUp = this.add.image(this.betText.x + 100, this.betText.y-30, 'cash_arrow')
+        this.cashArrowUp = this.add.image(this.betText.x + 120, this.betText.y-30, 'cash_arrow')
           .setScale(.6)
           .setDepth(2)
           .setOrigin(.5)
@@ -76,92 +70,63 @@ export default class Pick extends Phaser.Scene {
           .setInteractive();
           
           //cash arrow
-        this.cashArrowDown = this.add.image(this.betText.x + 100, this.betText.y+30, 'cash_arrow')
+        this.cashArrowDown = this.add.image(this.betText.x + 120, this.betText.y+30, 'cash_arrow')
           .setScale(.6)
           .setDepth(2)
           .setOrigin(.5)
           .setRotation(Phaser.Math.DegToRad(270))
           .setInteractive();
     
-          const placebetText = this.add.text((this.width/2),(this.height * .17),"Place your Bets!",{ fontFamily: 'font1', fill: '#00ff00' })
+        const placebetText = this.add.text((this.width/2),(this.height * .17),"Place your Bets!",{ fontFamily: 'font1', fill: '#00ff00' })
           .setFontSize(60)
           .setColor('#FFFFFF')
           .setShadow(3, 3, 'rgba(0,0,0,0.5)', 5)
           .setDepth(2)
           .setOrigin(.5);
 
-          this.tweens.add({
-            targets: [placebetText],
-            scale: {
-                from: .7,
-                to: .8,
-                },
-            duration: 1000,
-            yoyo: true,
-            repeat: -1,
-            ease: 'Linear'
+        this.tweens.add({
+          targets: [placebetText],
+          scale: {
+              from: .7,
+              to: .8,
+              },
+          duration: 1000,
+          yoyo: true,
+          repeat: -1,
+          ease: 'Linear'
         })
 
-        this.horses = [{
-            name: 'Viscount',
-            dashing: false,
-            speed: 3,
-            stamina: 1,
-            rank: 0,
-            profilepic: 'horse0_profile'
-          },
-          {
-            name: 'Grace',
-            dashing: false,
-            speed: 1,
-            stamina: 1,
-            rank: 0,
-            profilepic: 'horse1_profile'
-          },
-          {
-            name: 'Rufus',
-            dashing: false,
-            speed: 1,
-            stamina: 1,
-            rank: 0,
-            profilepic: 'horse2_profile'
-          },
-          {
-            name: 'Izzy',
-            dashing: false,
-            speed: 1,
-            stamina: 1,
-            rafromnk: 0,
-            profilepic: 'horse3_profile'
-          },
-          {
-            name: 'Dorian',
-            dashing: false,
-            speed: 1,
-            stamina: 1,
-            rank: 0,
-            profilepic: 'horse4_profile'
-          }
-        ]  
+        this.horses = this.horsesClass.getHorses();
         
-          if(this.cash >=  0){
-            //cash arrow
-            this.cashArrowUp.on('pointerdown', () => {
-              this.cash -= 100;
-              this.betCash += 100;
-              this.cashText.setText('Cash: $' + this.cash);
-              this.betText.setText('Bet: $' + this.betCash);
-            })
+      
+        //cash arrow
+        this.cashArrowUp.on('pointerdown', () => {
+          if(this.cash > 0){
+            this.cash -= 100;
+            this.betCash += 100;
+            this.cashText.setText('Cash: $' + this.cash);
+            this.betText.setText('Bet: $' + this.betCash);
+            this.player.betCash(this.betCash);
+            this.player.setCash(this.cash);
+            console.log(`This cash ${this.cash}`)
           }
-            //cash arrow
-            this.cashArrowDown.on('pointerdown', () => {
-              this.cash += 100;
-              this.betCash -= 100;
-              this.cashText.setText('Cash: $' + this.cash);
-              this.betText.setText('Bet: $' + this.betCash);
-              console.log(this.player.betCash())
-            })
-           
+        })
+      
+
+        //cash arrow
+        this.cashArrowDown.on('pointerdown', () => {
+          if(this.betCash > 0){
+            this.cash += 100;
+            this.betCash -= 100;
+            console.log(`this bet cash: ${this.betCash}`)
+            this.cashText.setText('Cash: $' + this.cash);
+            this.betText.setText('Bet: $' + this.betCash);
+            this.player.betCash(this.betCash);
+            this.player.setCash(this.cash);
+            console.log(`local storage bet cash ${this.player.getBetCash()}`)
+          }
+        })
+      
 
 
         this.horses.forEach((horse, index) => {
@@ -207,16 +172,17 @@ export default class Pick extends Phaser.Scene {
                       })
                     
 
-                    if(this.horseSelected === true) {
+                    if(this.horseSelected === true && this.betCash > 0) {
                       console.log("horse selected")
-                        this.add.image(profilePic.x, profilePic.y, 'checkmark').setScale(.5).setDepth(2);
+                        this.add.image(this.width/2, profilePic.y, 'checkmark').setScale(.5).setDepth(2).setInteractive();
+                        this.add.text(profilePic.x + 30, profilePic.y, 'Selected',{ fontFamily: 'font1', fill: '#00ff00' })
                         // this.sceneStopped = true
                         // this.scene.stop('pick')
                         // this.handlerScene.launchScene('race')
                     }
                     
                   }); 
-              }         
+              }
          });
 
     }
