@@ -1,3 +1,6 @@
+import Player from './player'
+
+
 export default class Race extends Phaser.Scene {
 
   // Vars
@@ -13,14 +16,22 @@ export default class Race extends Phaser.Scene {
       this.stars = null;
       this.width = null;
       this.height = null;
+      this.player = new Player();
+      this.profilePics = [];
+      this.cups = [];
+      this.finishers = [];
+      this.textRendered = false;
   }
 
   preload() {
       this.sceneStopped = false
       this.width = this.game.screenBaseSize.width
       this.height = this.game.screenBaseSize.height
-      this.handlerScene = this.scene.get('handler')      
-      
+      this.handlerScene = this.scene.get('handler')
+
+      //vars
+      this.courseLength = 10;
+      this.finish = false;
 
       this.load.image('background1_clouds', '../assets/images/background1_clouds.png');
       this.load.image('background1_seats', '../assets/images/background1_seats.png');
@@ -30,7 +41,7 @@ export default class Race extends Phaser.Scene {
       this.load.image('background1_fence', '../assets/images/background1_fence.png');
       this.load.image('background1_finish', '../assets/images/background1_finish.png');
       this.load.image('background_title', '../assets/images/background_title.png');
-      this.load.image('background_ui', '../assets/images/newui-crop3.png');
+      this.load.image('background_ui', '../assets/images/race_ui.png');
       this.load.image('horse0_profile', '../assets/images/horse0_profile.png');
       this.load.image('horse1_profile', '../assets/images/horse1_profile.png');
       this.load.image('horse2_profile', '../assets/images/horse3_profile.png');
@@ -38,6 +49,11 @@ export default class Race extends Phaser.Scene {
       this.load.image('horse4_profile', '../assets/images/horse5_profile.png');
       this.load.image('finish_line', '../assets/images/finish_line.png');
       this.load.image('star', '../assets/images/star.png');
+      this.load.image('gold_cup', '../assets/images/gold_cup.png');
+      this.load.image('silver_cup', '../assets/images/silver_cup.png');
+      this.load.image('bronze_cup', '../assets/images/bronze_cup.png');
+
+      this.load.spritesheet('coins', '../assets/images/coinsheet.png', {frameWidth: 25,frameHeight: 25 });
 
 
       this.load.spritesheet('horse0', '../assets/images/horse1_sheet.png', {
@@ -61,12 +77,14 @@ export default class Race extends Phaser.Scene {
         frameHeight: 321
       });
 
-      //vars
-      this.courseLength = 5;
-      this.finish = false;
+
+
   }
 
   create() {
+      this.horsebeton = this.player.getHorseBetOn();
+      this.betAmount = this.player.getBetCash();
+
       const { width, height } = this
       // CONFIG SCENE        
       this.handlerScene.updateResize(this)
@@ -124,11 +142,11 @@ export default class Race extends Phaser.Scene {
       });
     }
 
-    this.horse0 = this.physics.add.sprite(width * .5 - 100, this.background_seats.y + 60, 'horse0').setScale(.3).setDepth(5);
-    this.horse1 = this.physics.add.sprite(width * .5 - 100, this.horse0.y + 40, 'horse1').setScale(.3).setDepth(5);
-    this.horse2 = this.physics.add.sprite(width * .5 - 100, this.horse0.y + 80, 'horse2').setScale(.3).setDepth(5);
-    this.horse3 = this.physics.add.sprite(width * .5 - 100, this.horse0.y + 120, 'horse3').setScale(.3).setDepth(5);
-    this.horse4 = this.physics.add.sprite(width * .5 - 100, this.horse0.y + 160 , 'horse4').setScale(.3).setDepth(5);
+    this.horse0 = this.physics.add.sprite(width * .5 - 150, this.background_seats.y + 60, 'horse0').setScale(.3).setDepth(5);
+    this.horse1 = this.physics.add.sprite(width * .5 - 150, this.horse0.y + 40, 'horse1').setScale(.3).setDepth(5);
+    this.horse2 = this.physics.add.sprite(width * .5 - 150, this.horse0.y + 80, 'horse2').setScale(.3).setDepth(5);
+    this.horse3 = this.physics.add.sprite(width * .5 - 150, this.horse0.y + 120, 'horse3').setScale(.3).setDepth(5);
+    this.horse4 = this.physics.add.sprite(width * .5 - 150, this.horse0.y + 160 , 'horse4').setScale(.3).setDepth(5);
 
 
     this.horses = [{
@@ -138,16 +156,18 @@ export default class Race extends Phaser.Scene {
       speed: 3,
       stamina: 1,
       rank: 0,
-      profilepic: 'horse0_profile'
+      profilepic: 'horse0_profile',
+      finished : false
     },
     {
       horse: this.horse1,
-      name: 'Lady Grace',
+      name: 'Grace',
       dashing: false,
       speed: 1,
       stamina: 1,
       rank: 0,
-      profilepic: 'horse1_profile'
+      profilepic: 'horse1_profile',
+      finished : false
     },
     {
       horse: this.horse2,
@@ -156,7 +176,8 @@ export default class Race extends Phaser.Scene {
       speed: 1,
       stamina: 1,
       rank: 0,
-      profilepic: 'horse2_profile'
+      profilepic: 'horse2_profile',
+      finished : false
     },
     {
       horse: this.horse3,
@@ -165,41 +186,65 @@ export default class Race extends Phaser.Scene {
       speed: 1,
       stamina: 1,
       rank: 0,
-      profilepic: 'horse3_profile'
+      profilepic: 'horse3_profile',
+      finished : false
     },
     {
       horse: this.horse4,
-      name: 'Lord Dorian',
+      name: 'Dorian',
       dashing: false,
       speed: 1,
       stamina: 1,
       rank: 0,
-      profilepic: 'horse4_profile'
+      profilepic: 'horse4_profile',
+      finished : false
     }
   ]
 
 
-    //image/Text logic ---------------------------------------
-    this.horses.forEach((h, index) => {
-      createAnim(`horse${index}`)
-      
-      //profile pics
-      this.add.image(105, (this.background_fence2.y + 55) + (108*index), h.profilepic).setScale(.18).setDepth(6)
-      //names iu
-      this.add.text(
-        170,
-        (this.background_fence2.y + 35) + (110*index), 
-        `${h.name}`,{ fontFamily: 'font1', fill: '#00ff00' }).setFontSize(32).setColor('#FFFFFF').setShadow(3, 3, 'rgba(0,0,0,0.5)', 5);      
-    })
 
 
     //ANIMATIONS-----------------------------------------
+
+
+    //image/Text logic ---------------------------------------
+    this.horses.forEach((h, index) => {
+      
+      //create animations
+      createAnim(`horse${index}`)
+      
+      const profilePic = this.add.image(60, (this.background_fence2.y + 55) + (108*index), h.profilepic).setScale(.18).setDepth(6)
+      this.profilePics.push(profilePic)
+      
+      //aniamtion for the profile pic moving horizontally
+      this.tweens.add({
+        targets: [profilePic],
+        x: 450,
+        duration: this.courseLength*850,
+        yoyo: false,
+        ease: 'Linear'
+      })
+      //animate the horse profiles pic we bet on
+      if(this.horsebeton == h.name){        
+        this.tweens.add({
+          targets: [profilePic],
+          scale: {
+              from: .18,
+              to: .3,
+              },
+          duration: 1000,
+          yoyo: true,
+          repeat: -1,
+          ease: 'Linear'
+        })
+      }
+    })
     
     //dash
     this.createDash = (sprite, delay) => {
-      const horse = sprite.horse;
+
       this.tweens.add({
-        targets: [horse],
+        targets: [sprite.horse],
         x: 300,
         duration: 6000,
         hold: 700,
@@ -208,6 +253,21 @@ export default class Race extends Phaser.Scene {
           sprite.dashing = false
         },
         yoyo: true,
+      })
+    }
+
+    this.profileDash = (sprite, delay, spritePosition) => {
+
+      this.tweens.add({
+        targets: [sprite],
+        x: 100+spritePosition,
+        duration: 6000,
+        hold: 700,
+        loopDelay: delay,
+        onComplete: () => {
+          sprite.dashing = false
+        },
+        yoyo: false,
       })
     }
 
@@ -244,47 +304,73 @@ export default class Race extends Phaser.Scene {
       fontFamily: 'font1',
     });
     this.timer.setFontSize(24)
+    
+    
+    //Coins-----------------------------------------
+    this.coinsGroup = this.physics.add.group();
 
-    this.add.text(this.width/2, this.height/2, "test").setDepth(10);
-    // stars-----------------------------------------
-    this.createStars = () => {
+    this.anims.create({
+      key: 'coin-spin',
+      frames: this.anims.generateFrameNumbers('coins', {
+        start: 0,
+        end: 5
+      }),
+      frameRate: 15,
+      repeat: -1,
+      timeScale: 1
+    });
+    
+    this.spawnCoins = () => {
+      let x = Phaser.Math.Between(0, this.width);
+      let y = 0;
+    
+      let coin = this.coinsGroup.create(x, y, 'coins');
+      coin.anims.play('coin-spin');
+      coin.setCollideWorldBounds(false, 1, 1);
+      coin.setDepth(6);
+      coin.setGravityY(1000);
+      coin.setVelocity(Phaser.Math.Between(-400, 400), -200);
+      coin.outOfBoundsKill = true;
+    };
 
-        this.stars = this.physics.add.group({
-            key: 'star',
-            repeat: 1,
-            setXY: { x: 0, y: 0, stepX: 0}
-          });
 
-        this.time.addEvent({
-          delay: 30,
-          callback: this.spawnStar,
-          callbackScope: this,
-          loop: true
-        });
+    //trophy logic
+    this.gold_cup = this.add.image(this.width, this.height*.1, 'gold_cup').setDepth(7).setAlpha(0);
+    this.silver_cup = this.add.image(this.width, this.gold_cup.y+120, 'silver_cup').setDepth(7).setAlpha(0);
+    this.bronze_cup = this.add.image(this.width, this.silver_cup.y+120, 'bronze_cup').setDepth(7).setAlpha(0);
+    
+    this.cups.push(this.gold_cup,this.silver_cup,this.bronze_cup)
+
+
+    this.winnerText=(y,winners)=> {
+      let text = this.add.text(this.width, y, winners,{ fontFamily: 'font1', fill: '#00ff00' })
+        .setFontSize(32)
+        .setColor('#FFFFFF')
+        .setShadow(3, 3, 'rgba(0,0,0,0.5)', 5)
+        .setDepth(7); 
+
+        this.tweens.add({
+          targets: [text],
+          x: this.width/2,
+          duration: 700
+        })
     }
 
-    this.spawnStar=()=> {
-      var x = Phaser.Math.Between(0, this.width);
-      var y = 0;
   
-      var star = this.stars.create(x, this.height/4, 'star'); 
-      star.setCollideWorldBounds(false, 1, 1);
-      star.setDepth(6);
-      star.setGravityY(1000);
-      star.setVelocity(Phaser.Math.Between(-400, 400), -200);
-      star.outOfBoundsKill = true;
-    }
-  
-
   }
 
-  //UPDATE-----------------------------------------
+
+
+
+  
+  //UPDATE-------------------------------------------------------------------------------
   update() {
+    
 
     this.realTime += 1/60
     this.createDashTimer += 1/60
     this.timer.setText(`${(this.realTime).toFixed(2)}`)
-    
+    this.textRendered = false;
     //determine when to end the race
     this.realTime <= this.courseLength ? this.finish = false : this.finish = true;
    
@@ -296,19 +382,23 @@ export default class Race extends Phaser.Scene {
         h.horse.anims.play(`horse${index}-run`, true)
       })
       
-      //create Dash
+        //create Dash
         if(this.createDashTimer >= 2){
 
           let rng = Phaser.Math.Between(0,this.horses.length-1)
-          
+
           let horse = this.horses[rng]
+          let horseProfilePic = this.profilePics[rng];
           let horseDashing = this.horses[rng].dashing;
 
           if(!horseDashing){
-            this.horses[rng].dashing = true;
-            this.createDash(horse, 1000)
+            horse.dashing = true;
+            this.createDash(horse, 1000, 300, true,0)
+            this.createDash(horseProfilePic,1000, false,horseProfilePic.x)
             this.createDashTimer = 0;
           } 
+
+          horseDashing = false;
         
         }
 
@@ -317,32 +407,57 @@ export default class Race extends Phaser.Scene {
         b.background.tilePositionX += b.tileSpeed
         })
     }
-    
+
     //final dash to finish line
     if (this.finish == true) {
-      
-      //create finish line sprite
-      this.finish_line()
         
-      //change the horse animation
-      this.horses.forEach(h  => {
-
-        //create dash animation
-        this.createFinishDash(h,true)
-        //choose winner based on x position
-        if(h.horse.x >= 221 && !this.winner_finish) {
-          console.log(`${h.name} is the winner!`)
-          //create winner animation
-          this.createStars();
-          this.winner_finish = true;
+        //create finish line sprite
+        this.finish_line()
           
-        }
-        
-      })
+        //change the horse animation
+        this.horses.forEach(h  => {
+
+          //create dash animation
+          this.createFinishDash(h,true)
+          //choose winner based on x position
+          if(h.horse.x >= 221) {
+            //create array of finishers
+            if(h.finished === false){
+              this.finishers.push(h.name);
+              h.finished = true;
+              this.winner_finish = true;
+            }
+          }
+        })
+    } else {
+      this.finish = false
     }
+    //Winner animations
+    if(this.winner_finish === true) {
+      console.log(`Finishers : ${this.finishers}`)
+      
+      this.spawnCoins()
 
-    //TODO: create a function to stop the scene
+      this.cups.forEach(c => {
+        c.setAlpha(1);
+        this.tweens.add({
+          targets: [c],
+          x: this.width/2,
+          duration: 1000,
+          yoyo: false,
+          repeat: -1,
+          ease: 'Linear'
+        })
+      })
+      
+      //this.winnerText(this.width/2,this.height*.3,this.finishers[0])
+    } else (
+      this.winner = false
+    )
 
+
+
+    //TODO: create a function to stop the scen
 
 
   }

@@ -40,7 +40,7 @@ export default class Preload extends Phaser.Scene {
             progressBar.destroy()
             progressBox.destroy()
             this.time.addEvent({
-                delay: this.game.debugMode ? 1000 : 2000,
+                delay: this.game.debugMode ? 100 : 2000,
                 callback: () => {
                     this.sceneStopped = true
                     this.handlerScene.cameras.main.setBackgroundColor("#ffffff")

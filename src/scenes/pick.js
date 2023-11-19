@@ -21,6 +21,7 @@ export default class Pick extends Phaser.Scene {
         this.cash = 1000;
         this.handlerScene = this.scene.get('handler')
         this.load.image('ui', '../assets/images/bet_ui.png');
+        this.load.image('start', '../assets/images/start.png');
         this.load.image('checkmark', '../assets/images/checkmark.png');
         this.load.image('cash_arrow', '../assets/images/cash_arrow.png');
         this.load.image('horse0_profile', '../assets/images/horse0_profile.png');
@@ -43,7 +44,7 @@ export default class Pick extends Phaser.Scene {
         this.background = this.add.image(width / 2, height / 2,'ui').setOrigin().setDepth(1)
 
         //cash text
-        this.cashText = this.add.text(width *.25, height *.85, 'Cash: $' + this.cash, { fontFamily: 'font1', fill: '#00FF00' })
+        this.cashText = this.add.text(width *.25, height *.83, 'Cash: $' + this.cash, { fontFamily: 'font1', fill: '#00FF00' })
           .setFontSize(50)
           .setColor('#FFFFFF')
           .setShadow(3, 3, 'rgba(0,0,0,0.5)', 5)
@@ -52,7 +53,7 @@ export default class Pick extends Phaser.Scene {
           .setAlign('center');
 
         //betamount text
-        this.betText = this.add.text(width * .68, height *.85, 'Bet : $' + this.betCash, { fontFamily: 'font1', fill: '#00FF00' })
+        this.betText = this.add.text(width * .68, height *.83, 'Bet : $' + this.betCash, { fontFamily: 'font1', fill: '#00FF00' })
           .setFontSize(50)
           .setColor('#FFFFFF')
           .setShadow(3, 3, 'rgba(0,0,0,0.5)', 5)
@@ -108,7 +109,6 @@ export default class Pick extends Phaser.Scene {
             this.betText.setText('Bet: $' + this.betCash);
             this.player.betCash(this.betCash);
             this.player.setCash(this.cash);
-            console.log(`This cash ${this.cash}`)
           }
         })
       
@@ -118,12 +118,10 @@ export default class Pick extends Phaser.Scene {
           if(this.betCash > 0){
             this.cash += 100;
             this.betCash -= 100;
-            console.log(`this bet cash: ${this.betCash}`)
             this.cashText.setText('Cash: $' + this.cash);
             this.betText.setText('Bet: $' + this.betCash);
             this.player.betCash(this.betCash);
             this.player.setCash(this.cash);
-            console.log(`local storage bet cash ${this.player.getBetCash()}`)
           }
         })
       
@@ -141,53 +139,69 @@ export default class Pick extends Phaser.Scene {
                 .setShadow(3, 3, 'rgba(0,0,0,0.5)', 5)
                 .setDepth(2);
 
-              if(this.horseSelected === false){
-                  profilePic.on('pointerdown', () => {
-                    this.horseSelected = true;
+                profilePic.on('pointerdown', () => {
+                    if(this.horseSelected === false){
+                        this.horseSelected = true;
 
-                    this.player.setHorseBetOn(horse.name);
+                        this.player.setHorseBetOn(horse.name);
 
-                    this.tweens.add({
-                      targets: [profilePic],
-                      scale: {
-                          from: .15,
-                          to: .2,
-                          },
-                      duration: 1000,
-                      yoyo: true,
-                      repeat: -1,
-                      ease: 'Linear'
-                      })
+                        this.tweens.add({
+                          targets: [profilePic],
+                          scale: {
+                              from: .15,
+                              to: .2,
+                              },
+                          duration: 1000,
+                          yoyo: true,
+                          repeat: -1,
+                          ease: 'Linear'
+                          })
 
-                    this.tweens.add({
-                      targets: [profileText],
-                      scale: {
-                          from: 1,
-                          to: 1.2,
-                          },
-                      duration: 1000,
-                      yoyo: true,
-                      repeat: -1,
-                      ease: 'Linear'
-                      })
-                    
-
-                    if(this.horseSelected === true && this.betCash > 0) {
-                      console.log("horse selected")
-                        this.add.image(this.width/2, profilePic.y, 'checkmark').setScale(.5).setDepth(2).setInteractive();
-                        this.add.text(profilePic.x + 30, profilePic.y, 'Selected',{ fontFamily: 'font1', fill: '#00ff00' })
-                        // this.sceneStopped = true
-                        // this.scene.stop('pick')
-                        // this.handlerScene.launchScene('race')
+                        this.tweens.add({
+                          targets: [profileText],
+                          scale: {
+                              from: 1,
+                              to: 1.2,
+                              },
+                          duration: 1000,
+                          yoyo: true,
+                          repeat: -1,
+                          ease: 'Linear'
+                        })
                     }
-                    
-                  }); 
-              }
-         });
+                }); 
+                  
+        });
 
+        //start button
+        const startButton = this.add.image((this.width/2), (this.height * .91), 'start').setScale(1).setDepth(2).setInteractive();
+
+        this.tweens.add({
+          targets: [startButton],
+          scale: {
+              from: .3,
+              to: .4,
+              },
+          duration: 1000,
+          yoyo: true,
+          repeat: -1,
+          ease: 'Linear'
+        })
+
+
+        startButton.on('pointerdown', () => {
+  
+            if(this.horseSelected === true && this.betCash > 0) {
+                this.sceneStopped = true
+                this.scene.stop('pick')
+                this.handlerScene.launchScene('race')
+            }
+          })
+                
     }
 
 
 
+   
 
 }
