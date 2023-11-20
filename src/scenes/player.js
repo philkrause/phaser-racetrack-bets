@@ -13,7 +13,7 @@ class Player {
         localStorage.setItem("horsebeton", this.stats.horsebeton);
         localStorage.setItem("firstgame", this.stats.firstgame);
     }
-
+    background
     getCash() {
         return localStorage.getItem("cash");
     }
