@@ -344,12 +344,7 @@ export default class Race extends Phaser.Scene {
     this.cashText = () => {
 
       let cashWon = 1000
-      let winner = this.add.text(this.width/2, this.height/2 + 100, `WINNER`,{ fontFamily: 'font1', fill: '#00FF00' })
-      .setFontSize(48)
-      .setColor('#FFFFFF')
-      .setShadow(3, 3, 'rgba(0,0,0,0.5)', 5)
-      .setDepth(7)
-      .setOrigin(.5);
+
       
       let cash = this.add.text(this.width/2, this.height/2 + 200, `Cash Won $${cashWon}`,{ fontFamily: 'font1', fill: '#00ff00' })
       .setFontSize(48)
@@ -359,7 +354,7 @@ export default class Race extends Phaser.Scene {
       .setOrigin(.5);
               
       this.tweens.add({
-        targets: [winner],
+        targets: [cash],
         scale: {
           from: 1,
           to: 2,
@@ -372,28 +367,36 @@ export default class Race extends Phaser.Scene {
     }
 
     this.winnerText=(yPosition,winners)=> {
+
       let text = this.add.text(this.width, yPosition, winners,{ fontFamily: 'font1', fill: '#00ff00' })
         .setFontSize(48)
         .setColor('#FFFFFF')
         .setShadow(3, 3, 'rgba(0,0,0,0.5)', 5)
         .setDepth(7)
         .setOrigin(.5);
-        
-        this.tweens.add({
-          targets: [text],
-          x: this.width/2,
-          duration: 2000,
-          ease: 'Linear',
-          onComplete: () => {
-            this.cashText();
-          }
-        })
+
+      let winner = this.add.text(this.width/2, this.height/2 + 100, `WINNER`,{ fontFamily: 'font1', fill: '#00FF00' })
+      .setFontSize(48)
+      .setColor('#FFFFFF')
+      .setShadow(3, 3, 'rgba(0,0,0,0.5)', 5)
+      .setDepth(7)
+      .setOrigin(.5);
+      
+      this.tweens.add({
+        targets: [text,winner],
+        x: this.width/2,
+        duration: 1000,
+        ease: 'Linear',
+        onComplete: () => {
+          this.cashText();
+        }
+      })
 
     }
 
 
     this.loseText = () => {
-      const lose =  this.add.text(this.width/2,this.height/2,"No Winners")
+      const lose =  this.add.text(this.width/2,this.height/2,"No Winners",{ fontFamily: 'font1', fill: '#00ff00' })
       .setFontSize(48)
       .setColor('#FF0000')
       .setShadow(3, 3, 'rgba(0,0,0,0.5)', 5)
@@ -406,7 +409,7 @@ export default class Race extends Phaser.Scene {
           from: 1,
           to:2
         }, 
-        duration: 900,
+        duration: 1200,
         repeat: -1,
         ease: 'Linear'
       })
@@ -508,10 +511,9 @@ export default class Race extends Phaser.Scene {
               this.tweens.add({
                 targets: [c],
                 x: this.width/2,
-                duration: 900,
+                duration: 1000,
                 yoyo: false,
-                repeat: -1,
-                ease: 'Linear'  
+                ease: 'Linear'
               })
   
 
@@ -529,9 +531,11 @@ export default class Race extends Phaser.Scene {
         if(this.horsebeton === this.finishers[0] || this.horsebeton === this.finishers[1] || this.horsebeton === this.finishers[2] && this.renderWinnerText === true) {
           this.spawnCoins();
           this.renderWinnerText = false;
-        } else if(this.renderLoseText = true) {
+          this.renderLoseText = false;
+        } else if(this.renderLoseText === true) {
             this.loseText();
             this.renderLoseText = false;
+            this.renderWinnerText = false;
         }
       
     } 
