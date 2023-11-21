@@ -7,7 +7,7 @@ class Horses {
   getHorses() {
 
     this.horses = [{
-        name: 'Viscount',
+        name: 'Big Red',
         dashing: false,
         speed: 3,
         stamina: 1,
@@ -15,7 +15,7 @@ class Horses {
         profilepic: 'horse0_profile'
       },
       {
-        name: 'Grace',
+        name: 'Leroy',
         dashing: false,
         speed: 1,
         stamina: 1,
@@ -23,7 +23,7 @@ class Horses {
         profilepic: 'horse1_profile'
       },
       {
-        name: 'Rufus',
+        name: 'Walter',
         dashing: false,
         speed: 1,
         stamina: 1,
@@ -31,7 +31,7 @@ class Horses {
         profilepic: 'horse2_profile'
       },
       {
-        name: 'Izzy',
+        name: 'Gandalf',
         dashing: false,
         speed: 1,
         stamina: 1,
@@ -39,7 +39,7 @@ class Horses {
         profilepic: 'horse3_profile'
       },
       {
-        name: 'Dorian',
+        name: 'Jimi',
         dashing: false,
         speed: 1,
         stamina: 1,

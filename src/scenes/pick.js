@@ -32,7 +32,6 @@ export default class Pick extends Phaser.Scene {
     }
 
     create() {
-        console.log(`Starting Cash ${this.cash}`)
         const { width, height } = this
         
         // CONFIG SCENE         
