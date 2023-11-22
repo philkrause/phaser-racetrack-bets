@@ -22,6 +22,7 @@ export default class Race extends Phaser.Scene {
       this.finishers = [];
       this.renderWinnerText = true;
       this.renderLoseText = true;
+      this.renderRankText = true;
   }
 
   preload() {
@@ -29,9 +30,15 @@ export default class Race extends Phaser.Scene {
       this.width = this.game.screenBaseSize.width
       this.height = this.game.screenBaseSize.height
       this.handlerScene = this.scene.get('handler')
-      
       this.courseLength = 10;
-      this.finish = false;
+      this.winner_finish = false;
+      this.renderWinnerText = true;
+      this.renderLoseText = true;
+      this.renderRankText = true;
+      this.realTime = 0;
+      this.createDashTimer = 0;
+      this.finishers = [];
+      this.profilePics = [];
 
       this.load.image('background1_clouds', '../assets/images/background1_clouds.png');
       this.load.image('background1_seats', '../assets/images/background1_seats.png');
@@ -52,6 +59,8 @@ export default class Race extends Phaser.Scene {
       this.load.image('gold_cup', '../assets/images/gold_cup.png');
       this.load.image('silver_cup', '../assets/images/silver_cup.png');
       this.load.image('bronze_cup', '../assets/images/bronze_cup.png');
+      this.load.image('play_again', '../assets/images/play_again.png');
+
 
       this.load.spritesheet('coins', '../assets/images/coinsheet.png', {frameWidth: 25,frameHeight: 25 });
 
@@ -81,6 +90,7 @@ export default class Race extends Phaser.Scene {
   }
 
   create() {
+
       this.horsebeton = this.player.getHorseBetOn();
       this.betAmount = this.player.getBetCash();
 
@@ -100,32 +110,32 @@ export default class Race extends Phaser.Scene {
       this.background_fence2 = this.add.tileSprite(this.width/2, this.background_clouds.y + 340, 0, 0, 'background1_fence').setDepth(5);
       this.background_ui = this.add.image(this.width/2,this.background_fence2.y + 270,'background_ui');
       
-    this.allBackgrounds = [
-        {
-          background: this.background_clouds,
-          tileSpeed: 1,
-        },
-        {
-          background:this.background_seats,
-          tileSpeed: 2,
-        },
-        {
-          background: this.background_trees,
-          tileSpeed: 4,
-        },
-        {
-          background:this.background_course,
-          tileSpeed: 8,
-        },      
-        {
-          background: this.background_fence,
-          tileSpeed: 8,
-        },      
-        {
-          background: this.background_fence2,
-          tileSpeed: 8,
-        },
-      ]
+      this.allBackgrounds = [
+          {
+            background: this.background_clouds,
+            tileSpeed: 1,
+          },
+          {
+            background:this.background_seats,
+            tileSpeed: 2,
+          },
+          {
+            background: this.background_trees,
+            tileSpeed: 4,
+          },
+          {
+            background:this.background_course,
+            tileSpeed: 8,
+          },      
+          {
+            background: this.background_fence,
+            tileSpeed: 8,
+          },      
+          {
+            background: this.background_fence2,
+            tileSpeed: 8,
+          },
+        ]
 
     //create animation function
     const createAnim = (sprite) => {
@@ -170,7 +180,7 @@ export default class Race extends Phaser.Scene {
     },
     {
       horse: this.horse2,
-      name: 'Walter',
+      name: 'Goldie',
       dashing: false,
       speed: 1,
       stamina: 1,
@@ -190,7 +200,7 @@ export default class Race extends Phaser.Scene {
     },
     {
       horse: this.horse4,
-      name: 'Jimi',
+      name: 'Vader',
       dashing: false,
       speed: 1,
       stamina: 1,
@@ -213,7 +223,7 @@ export default class Race extends Phaser.Scene {
       const profilePic = this.add.image(this.width/2, (this.background_fence2.y + 55) + (108*index), h.profilepic).setScale(.18).setDepth(6)
       this.profilePics.push(profilePic)
 
-      const horseName = this.add.text(60,(this.background_fence2.y + 35) + (110*index), `${h.name}`,{ fontFamily: 'font1', fill: '#00ff00' }).setFontSize(48).setColor('#FFFFFF').setShadow(3, 3, 'rgba(0,0,0,0.5)', 5);
+      const horseName = this.add.text(60,(this.background_fence2.y + 35) + (110*index), `${h.name}`,{ fontFamily: 'font1', fill: '#00ff00' }).setFontSize(40).setColor('#FFFFFF').setShadow(3, 3, 'rgba(0,0,0,0.5)', 5);
 
       if(this.horsebeton == h.name){
           
@@ -233,7 +243,7 @@ export default class Race extends Phaser.Scene {
             targets: [horseName],
             scale: {
                 from: 1,
-                to: 1.3,
+                to: 1.2,
                 },
             duration: 1000,
             yoyo: true,
@@ -243,7 +253,8 @@ export default class Race extends Phaser.Scene {
 
       }
     })
-    
+
+
     //dash
     this.createDash = (sprite, delay) => {
 
@@ -341,18 +352,26 @@ export default class Race extends Phaser.Scene {
     
     this.cups.push(this.gold_cup,this.silver_cup,this.bronze_cup)
 
-    this.cashText = () => {
+    //end game text
+    this.cashText = (win) => {
 
       let cashWon = 1000
-
-      
+      let cashBet = this.player.getBetCash();
       let cash = this.add.text(this.width/2, this.height/2 + 200, `Cash Won $${cashWon}`,{ fontFamily: 'font1', fill: '#00ff00' })
       .setFontSize(48)
       .setColor('#FFFFFF')
       .setShadow(3, 3, 'rgba(0,0,0,0.5)', 5)
       .setDepth(7)
       .setOrigin(.5);
-              
+
+      if(win === true) {
+        cash.setText(`Cash Won $${cashWon}`)
+      }
+      
+      if(win === false) {
+        cash.setText(`Cash Lost $${cashBet}`)
+      }
+      
       this.tweens.add({
         targets: [cash],
         scale: {
@@ -366,42 +385,54 @@ export default class Race extends Phaser.Scene {
 
     }
 
-    this.winnerText=(yPosition,winners)=> {
+    this.rankText = (yPosition,winners) => {
+      
+        let text = this.add.text(this.width, yPosition, winners,{ fontFamily: 'font1', fill: '#00ff00' })
+          .setFontSize(48)
+          .setColor('#FFFFFF')
+          .setShadow(3, 3, 'rgba(0,0,0,0.5)', 5)
+          .setDepth(7)
+          .setOrigin(.5);
 
-      let text = this.add.text(this.width, yPosition, winners,{ fontFamily: 'font1', fill: '#00ff00' })
+          this.tweens.add({
+            targets: [text],
+            x: this.width/2,
+            duration: 1300,
+            ease: 'Linear'
+          })
+    }
+
+    this.winnerText=()=> {
+
+      let winner = this.add.text(this.width/2, this.height/2 + 100, `WINNER`,{ fontFamily: 'font1', fill: '#00FF00' })
         .setFontSize(48)
-        .setColor('#FFFFFF')
+        .setColor('#00FF00')
         .setShadow(3, 3, 'rgba(0,0,0,0.5)', 5)
         .setDepth(7)
         .setOrigin(.5);
-
-      let winner = this.add.text(this.width/2, this.height/2 + 100, `WINNER`,{ fontFamily: 'font1', fill: '#00FF00' })
-      .setFontSize(48)
-      .setColor('#FFFFFF')
-      .setShadow(3, 3, 'rgba(0,0,0,0.5)', 5)
-      .setDepth(7)
-      .setOrigin(.5);
       
       this.tweens.add({
-        targets: [text,winner],
-        x: this.width/2,
+        targets: [winner],
+        scale: {
+          from: 1,
+          to: 2
+        },
         duration: 1000,
         ease: 'Linear',
-        onComplete: () => {
-          this.cashText();
-        }
+        yoyo:true,
+        repeat: -1
       })
 
     }
 
-
     this.loseText = () => {
-      const lose =  this.add.text(this.width/2,this.height/2,"No Winners",{ fontFamily: 'font1', fill: '#00ff00' })
-      .setFontSize(48)
-      .setColor('#FF0000')
-      .setShadow(3, 3, 'rgba(0,0,0,0.5)', 5)
-      .setDepth(7)
-      .setOrigin(.5);
+
+      let lose =  this.add.text(this.width/2,this.height/2,"No Winners",{ fontFamily: 'font1', fill: '#00ff00' })
+        .setFontSize(48)
+        .setColor('#FF0000')
+        .setShadow(3, 3, 'rgba(0,0,0,0.5)', 5)
+        .setDepth(7)
+        .setOrigin(.5);
 
       this.tweens.add({
         targets: [lose],
@@ -410,11 +441,39 @@ export default class Race extends Phaser.Scene {
           to:2
         }, 
         duration: 1200,
+        yoyo:true,
         repeat: -1,
         ease: 'Linear'
       })
     } 
 
+
+    this.createplayAgain = () => {
+      let playagain = this.add.sprite(this.width/2,this.height*.9,'play_again')
+        .setInteractive()
+        .setDepth(7);
+
+      this.tweens.add({
+        targets: [playagain],
+        scale: {
+            from: 1,
+            to: 1.2,
+            },
+        duration: 1000,
+        yoyo: true,
+        repeat: -1,
+        ease: 'Linear'
+        })
+
+      playagain.on('pointerdown', () => {
+            this.player.setFirstGameStatus(false)
+            console.log(`This should be FALSE: ${this.player.isFirstGame()}`)
+            this.sceneStopped = true
+            this.scene.stop('race')
+            this.handlerScene.launchScene('pick')
+  
+      })
+    }
 
 
   }
@@ -434,15 +493,22 @@ export default class Race extends Phaser.Scene {
 
     //if race ongoing
     if(this.finish == false){ 
-      
-      //animations
-      this.horses.forEach((h, index) => {
-        h.horse.anims.play(`horse${index}-run`, true)
-      })
 
-      this.profilePics.forEach((pic, index) => {
-        pic.x = ((this.width/2) - 60) + (this.horses[index].horse.x/2) 
-      })
+
+      //horse animations
+      if(this.horses.length > 0){
+        this.horses.forEach((h, index) => {
+          h.horse.anims.play(`horse${index}-run`, true)
+        })
+      }
+      //profilepic animations
+      if(this.horses.length > 0){
+        this.profilePics.forEach((pic, index) => {
+          if(this.horses[index]){
+            pic.x = ((this.width/2) - 60) + (this.horses[index].horse.x/2) 
+          }
+        })
+      }
       
         //create Dash
         if(this.createDashTimer >= 2){
@@ -477,12 +543,12 @@ export default class Race extends Phaser.Scene {
 
               //create dash animation
               this.createFinishDash(h,true)
-              
+              this.realTime += 1/60
+              this.createDashTimer += 1/60
               //choose winner based on x position
               if(h.horse.x >= 298) {
                 //create array of finishers
                 if(h.finished === false){
-                  console.log(`Horse finished: ${h.name}`)
                   this.finishers.push(h.name);
                   h.finished = true;
                 }
@@ -501,7 +567,6 @@ export default class Race extends Phaser.Scene {
 
     //Winner animations
     if(this.winner_finish === true) {
-      console.log(`All finishers: ${this.finishers}`)
 
         //trophies
         this.cups.forEach((c) => {
@@ -511,36 +576,40 @@ export default class Race extends Phaser.Scene {
               this.tweens.add({
                 targets: [c],
                 x: this.width/2,
-                duration: 1000,
+                duration: 900,
                 yoyo: false,
                 ease: 'Linear'
               })
-  
-
         })
         
-        if(this.renderWinnerText === true){
-          console.log(`First Place: ${this.finishers}`)
-          this.winnerText(70,this.finishers[0])
-          this.winnerText(230,this.finishers[1])
-          this.winnerText(390,this.finishers[2])
-          this.renderWinnerText = false
+        if(this.renderRankText === true){
+          this.rankText(70,this.finishers[0])
+          this.rankText(230,this.finishers[1])
+          this.rankText(390,this.finishers[2])
+          this.renderRankText = false
         }
 
         //check if the horse you bet on finished in the top 3
-        if(this.horsebeton === this.finishers[0] || this.horsebeton === this.finishers[1] || this.horsebeton === this.finishers[2] && this.renderWinnerText === true) {
-          this.spawnCoins();
-          this.renderWinnerText = false;
+        if(this.horsebeton == this.finishers[0] || this.horsebeton == this.finishers[1] || this.horsebeton == this.finishers[2]) {
+          console.log(`FirstPlace: ${this.finishers[0]}\nSecondPlace: ${this.finishers[1]}\nThirdPlace: ${this.finishers[2]}`)
           this.renderLoseText = false;
-        } else if(this.renderLoseText === true) {
-            this.loseText();
-            this.renderLoseText = false;
-            this.renderWinnerText = false;
+          this.spawnCoins();
+          if(this.renderWinnerText === true){
+            this.winnerText();
+            this.cashText(true);
+            this.createplayAgain();
+            this.renderWinnerText =false;
+          }
+        }
+        if(this.renderLoseText === true) {
+          this.renderWinnerText = false;
+          this.loseText();
+          this.cashText(false)
+          this.renderLoseText = false;
+          this.createplayAgain();
         }
       
     } 
-
-
 
       //destroy coins
       this.coinsGroup.getChildren().forEach(coin => {

@@ -11,14 +11,14 @@ export default class Pick extends Phaser.Scene {
         this.horseSelected = false;
         this.cashArrowUp;
         this.betCash = 0;
-        this.cash = 0;
     }
 
     preload() {
         this.sceneStopped = false
+        this.horseSelected = false
+        this.betCash = 0;
         this.width = this.game.screenBaseSize.width
         this.height = this.game.screenBaseSize.height
-        this.cash = 1000;
         this.handlerScene = this.scene.get('handler')
         this.load.image('ui', '../assets/images/bet_ui.png');
         this.load.image('start', '../assets/images/start.png');
@@ -32,9 +32,13 @@ export default class Pick extends Phaser.Scene {
     }
 
     create() {
+        
+        //set up player variables
+        this.cash = this.player.getCash();
+      
+        //config scene         
         const { width, height } = this
         
-        // CONFIG SCENE         
         this.handlerScene.updateResize(this)
         if (this.game.debugMode){
             this.add.image(0, 0, 'guide').setOrigin(0).setDepth(4)
@@ -59,7 +63,6 @@ export default class Pick extends Phaser.Scene {
           .setDepth(2)
           .setOrigin(.5)
           .setAlign('center');
-
 
           //cash arrow
         this.cashArrowUp = this.add.image(this.betText.x + 120, this.betText.y-30, 'cash_arrow')
@@ -128,47 +131,75 @@ export default class Pick extends Phaser.Scene {
 
         this.horses.forEach((horse, index) => {
 
-            const profilePic = this.add.image((this.width/2) - 55, (this.height * .299) + (index*85), horse.profilepic)
+
+          this.time.addEvent({
+            delay: 5000,
+            callback : () => {},
+            loop: true
+          })
+            const profilePic = this.add.image(this.width - 55, (this.height * .299) + (index*85), horse.profilepic)
                 .setScale(.18)
                 .setDepth(2)
                 .setInteractive();
-            const profileText = this.add.text((this.width/2) + 50,(this.height * .299) + (index*85),`${horse.name}`,{ fontFamily: 'font1', fill: '#00ff00' })
+            const profileText = this.add.text(this.width,(this.height * .299) + (index*85),`${horse.name}`,{ fontFamily: 'font1', fill: '#00ff00' })
                 .setFontSize(32)
                 .setColor('#FFFFFF')
                 .setShadow(3, 3, 'rgba(0,0,0,0.5)', 5)
                 .setDepth(2);
+            
 
-                profilePic.on('pointerdown', () => {
-                    if(this.horseSelected === false){
-                        this.horseSelected = true;
+            
+            this.tweens.add({
+              targets: [profilePic,profileText],
+              x: (this.width/2) - 55,
+              duration: 600,
+              yoyo: false,
+              onComplete: () => {
+                this.tweens.add({
+                  targets: [profileText],
+                  x: (this.width/2) + 50,
+                  duration: 600,
+                  yoyo: false,
+                  ease: 'Linear',
+                  onComplete: () => {
+                    
+                  }
+                })
+              }
+            })
 
-                        this.player.setHorseBetOn(horse.name);
 
-                        this.tweens.add({
-                          targets: [profilePic],
-                          scale: {
-                              from: .15,
-                              to: .2,
-                              },
-                          duration: 1000,
-                          yoyo: true,
-                          repeat: -1,
-                          ease: 'Linear'
-                          })
+            profilePic.on('pointerdown', () => {
+                if(this.horseSelected === false){
+                    this.horseSelected = true;
 
-                        this.tweens.add({
-                          targets: [profileText],
-                          scale: {
-                              from: 1,
-                              to: 1.2,
-                              },
-                          duration: 1000,
-                          yoyo: true,
-                          repeat: -1,
-                          ease: 'Linear'
-                        })
-                    }
-                }); 
+                    this.player.setHorseBetOn(horse.name);
+
+                    this.tweens.add({
+                      targets: [profilePic],
+                      scale: {
+                          from: .15,
+                          to: .2,
+                          },
+                      duration: 1000,
+                      yoyo: true,
+                      repeat: -1,
+                      ease: 'Linear'
+                      })
+
+                    this.tweens.add({
+                      targets: [profileText],
+                      scale: {
+                          from: 1,
+                          to: 1.2,
+                          },
+                      duration: 1000,
+                      yoyo: true,
+                      repeat: -1,
+                      ease: 'Linear'
+                    })
+                }
+            }); 
                   
         });
 

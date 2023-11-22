@@ -23,7 +23,7 @@ class Horses {
         profilepic: 'horse1_profile'
       },
       {
-        name: 'Walter',
+        name: 'Goldie',
         dashing: false,
         speed: 1,
         stamina: 1,
@@ -39,7 +39,7 @@ class Horses {
         profilepic: 'horse3_profile'
       },
       {
-        name: 'Jimi',
+        name: 'Vader',
         dashing: false,
         speed: 1,
         stamina: 1,
