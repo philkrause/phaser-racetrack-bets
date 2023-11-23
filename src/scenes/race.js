@@ -352,36 +352,37 @@ export default class Race extends Phaser.Scene {
     
     this.cups.push(this.gold_cup,this.silver_cup,this.bronze_cup)
 
-    //end game text
-    this.cashText = (win) => {
+    //cash management
+    this.cashText = (win,place) => {
 
-      let cashWon = 1000
       let cashBet = this.player.getBetCash();
+      let cashWon = cashBet * place
       let cash = this.add.text(this.width/2, this.height/2 + 200, `Cash Won $${cashWon}`,{ fontFamily: 'font1', fill: '#00ff00' })
-      .setFontSize(48)
-      .setColor('#FFFFFF')
+      .setFontSize(52)
+      .setColor('#00FF00')
       .setShadow(3, 3, 'rgba(0,0,0,0.5)', 5)
       .setDepth(7)
       .setOrigin(.5);
 
       if(win === true) {
-        cash.setText(`Cash Won $${cashWon}`)
-      }
-      
-      if(win === false) {
-        cash.setText(`Cash Lost $${cashBet}`)
-      }
-      
-      this.tweens.add({
-        targets: [cash],
-        scale: {
-          from: 1,
-          to: 2,
+        cash.setText(`$${cashWon}`).setScale(2);
+        this.player.setCash(cashWon)
+        
+        //count up for cash won
+        this.tweens.add({
+          targets: { value: 0 },
+          value: cashWon,
+          duration: 3000,
+          onUpdate: function (tween) {
+              cash.setText(Math.floor(tween.getValue()));
           },
-        duration: 2000,
-        yoyo: true,
-        repeat: -1
-      })
+          onComplete: function () {
+              cash.setText(`$${cashWon}`); 
+          },
+          callbackScope: this
+        });
+  
+      }
 
     }
 
@@ -397,7 +398,7 @@ export default class Race extends Phaser.Scene {
           this.tweens.add({
             targets: [text],
             x: this.width/2,
-            duration: 1300,
+            duration: 1600,
             ease: 'Linear'
           })
     }
@@ -425,9 +426,9 @@ export default class Race extends Phaser.Scene {
 
     }
 
-    this.loseText = () => {
+    this.loseText = (message) => {
 
-      let lose =  this.add.text(this.width/2,this.height/2,"No Winners",{ fontFamily: 'font1', fill: '#00ff00' })
+      let lose =  this.add.text(this.width/2,this.height*.64,message,{ fontFamily: 'font1', fill: '#00ff00' })
         .setFontSize(48)
         .setColor('#FF0000')
         .setShadow(3, 3, 'rgba(0,0,0,0.5)', 5)
@@ -437,14 +438,15 @@ export default class Race extends Phaser.Scene {
       this.tweens.add({
         targets: [lose],
         scale: {
-          from: 1,
-          to:2
+          from: 1.3,
+          to:2.5
         }, 
         duration: 1200,
         yoyo:true,
         repeat: -1,
         ease: 'Linear'
       })
+  
     } 
 
 
@@ -472,7 +474,7 @@ export default class Race extends Phaser.Scene {
             this.scene.stop('race')
             this.handlerScene.launchScene('pick')
   
-      })
+      },this)
     }
 
 
@@ -535,32 +537,34 @@ export default class Race extends Phaser.Scene {
     //final dash to finish line
     if (this.finish == true) {
 
-            //create finish line sprite
-            this.finish_line()
-              
-            //change the horse animation
-            this.horses.forEach(h  => {
+          //create finish line sprite
+          this.finish_line()
+            
+          //change the horse animation
+          this.horses.forEach(h  => {
 
-              //create dash animation
-              this.createFinishDash(h,true)
-              this.realTime += 1/60
-              this.createDashTimer += 1/60
-              //choose winner based on x position
-              if(h.horse.x >= 298) {
-                //create array of finishers
-                if(h.finished === false){
-                  this.finishers.push(h.name);
-                  h.finished = true;
-                }
-
+            //create dash animation
+            this.createFinishDash(h,true)
+            this.realTime += 1/60
+            this.createDashTimer += 1/60
+            //choose winner based on x position
+            if(h.horse.x >= 298 && this.renderWinnerText == true) {
+              //create array of finishers
+              if(h.finished === false && this.renderWinnerText === true){
+                console.log(h.name)
+                this.finishers.push(h.name);
+                h.finished = true;
               }
-            })
+            }
+          })
 
           //if all horses finished create trophies and winners
-          const allHorsesFinished = this.horses.every(horse => horse.finished === true);
-          
+          const allHorsesFinished = this.horses.every((horse,index)=> {
+            return horse.finished == true
+          });
           if(allHorsesFinished) {
             this.winner_finish = true;
+            console.log(`finished here?: ${this.finishers}`)
           }
     }
 
@@ -577,34 +581,55 @@ export default class Race extends Phaser.Scene {
                 targets: [c],
                 x: this.width/2,
                 duration: 900,
-                yoyo: false,
-                ease: 'Linear'
+                yoyo: false
               })
         })
         
         if(this.renderRankText === true){
-          this.rankText(70,this.finishers[0])
-          this.rankText(230,this.finishers[1])
-          this.rankText(390,this.finishers[2])
+          this.rankText(170,this.finishers[0])
+          this.rankText(310,this.finishers[1])
+          this.rankText(500,this.finishers[2])
           this.renderRankText = false
         }
 
-        //check if the horse you bet on finished in the top 3
         if(this.horsebeton == this.finishers[0] || this.horsebeton == this.finishers[1] || this.horsebeton == this.finishers[2]) {
-          console.log(`FirstPlace: ${this.finishers[0]}\nSecondPlace: ${this.finishers[1]}\nThirdPlace: ${this.finishers[2]}`)
+        //check if the horse you bet on finished in the top 3
+          console.log(`Finishers: ${this.finishers}`)
           this.renderLoseText = false;
           this.spawnCoins();
+
           if(this.renderWinnerText === true){
             this.winnerText();
-            this.cashText(true);
             this.createplayAgain();
-            this.renderWinnerText =false;
+            this.renderWinnerText = false;
+
+            //payouts  
+            if(this.finishers[0] = this.horsebeton) {
+              console.log(this.finishers)
+              this.cashText(true,6)
+              console.log("Bet on Horse placed first")
+              this.renderWinnerText = false;
+              this.winner_finish = false;
+            } 
+            if(this.finishers[1] = this.horsebeton) {
+              this.cashText(true,3)
+              console.log("Bet on Horse placed second")
+              this.winner_finish = false;
+              this.renderWinnerText = false;
+
+            } 
+            if(this.finishers[2] = this.horsebeton) {
+              this.cashText(true,2)
+              console.log("Bet on Horse placed third")
+              this.winner_finish = false;
+              this.renderWinnerText = false;
+
+            }
           }
         }
         if(this.renderLoseText === true) {
           this.renderWinnerText = false;
-          this.loseText();
-          this.cashText(false)
+          this.player.getCash() == 0 ? this.loseText("Busted") : this.loseTest("You Lose");
           this.renderLoseText = false;
           this.createplayAgain();
         }

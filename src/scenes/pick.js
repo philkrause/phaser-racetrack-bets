@@ -24,19 +24,25 @@ export default class Pick extends Phaser.Scene {
         this.load.image('start', '../assets/images/start.png');
         this.load.image('checkmark', '../assets/images/checkmark.png');
         this.load.image('cash_arrow', '../assets/images/cash_arrow.png');
+        this.load.image('max_bet', '../assets/images/max_bet.png');
+ 
         this.load.image('horse0_profile', '../assets/images/horse0_profile.png');
         this.load.image('horse1_profile', '../assets/images/horse1_profile.png');
         this.load.image('horse2_profile', '../assets/images/horse3_profile.png');
         this.load.image('horse3_profile', '../assets/images/horse4_profile.png');
         this.load.image('horse4_profile', '../assets/images/horse5_profile.png');
-    }
-
-    create() {
-        
-        //set up player variables
-        this.cash = this.player.getCash();
+      }
       
-        //config scene         
+      create() {
+
+        //set up player variables
+        if(!this.player.isFirstGame() || this.player.getCash() == 0){
+          this.player.setCash(1000)
+          this.cash = this.player.getCash();
+        } else {
+          this.cash = this.player.getCash();
+        }
+        //config scene
         const { width, height } = this
         
         this.handlerScene.updateResize(this)
@@ -79,6 +85,13 @@ export default class Pick extends Phaser.Scene {
           .setOrigin(.5)
           .setRotation(Phaser.Math.DegToRad(270))
           .setInteractive();
+
+        //max bet
+        this.maxBet = this.add.image(this.width *.9, this.height * .92, 'max_bet')
+        .setScale(.8)
+        .setDepth(2)
+        .setOrigin(.5)
+        .setInteractive();
     
         const placebetText = this.add.text((this.width/2),(this.height * .17),"Place your Bets!",{ fontFamily: 'font1', fill: '#00ff00' })
           .setFontSize(60)
@@ -126,7 +139,18 @@ export default class Pick extends Phaser.Scene {
             this.player.setCash(this.cash);
           }
         })
-      
+
+        //max bet button
+        this.maxBet.on('pointerdown', () => {
+          if(this.cash > 0){
+            this.cash = 0
+            this.betCash += parseFloat(this.player.getCash())
+            this.cashText.setText('Cash: $' + this.cash);
+            this.betText.setText('Bet: $' + this.betCash);
+            this.player.betCash(this.betCash);
+            this.player.setCash(this.cash);
+          }
+        })
 
 
         this.horses.forEach((horse, index) => {
@@ -137,38 +161,33 @@ export default class Pick extends Phaser.Scene {
             callback : () => {},
             loop: true
           })
-            const profilePic = this.add.image(this.width - 55, (this.height * .299) + (index*85), horse.profilepic)
+            const profilePic = this.add.image(this.width + 100, (this.height * .299) + (index*85), horse.profilepic)
                 .setScale(.18)
                 .setDepth(2)
                 .setInteractive();
-            const profileText = this.add.text(this.width,(this.height * .299) + (index*85),`${horse.name}`,{ fontFamily: 'font1', fill: '#00ff00' })
+            const profileText = this.add.text(this.width+100,(this.height * .299) + (index*85),`${horse.name}`,{ fontFamily: 'font1', fill: '#00ff00' })
                 .setFontSize(32)
                 .setColor('#FFFFFF')
                 .setShadow(3, 3, 'rgba(0,0,0,0.5)', 5)
                 .setDepth(2);
             
-
-            
             this.tweens.add({
               targets: [profilePic,profileText],
               x: (this.width/2) - 55,
               duration: 600,
+              delay: 300 * index,
               yoyo: false,
-              onComplete: () => {
-                this.tweens.add({
-                  targets: [profileText],
-                  x: (this.width/2) + 50,
-                  duration: 600,
-                  yoyo: false,
-                  ease: 'Linear',
-                  onComplete: () => {
-                    
-                  }
-                })
-              }
+              ease: 'bounce'
             })
 
-
+            this.tweens.add({
+              targets: [profileText],
+              x: (this.width/2) + 50,
+              delay: 300 * index,
+              duration: 600,
+              yoyo: false,
+              ease: 'bounce'
+            })
             profilePic.on('pointerdown', () => {
                 if(this.horseSelected === false){
                     this.horseSelected = true;

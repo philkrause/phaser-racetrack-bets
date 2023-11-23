@@ -1,6 +1,7 @@
 class Player {
     constructor() {
         //defaults
+        localStorage.setItem('isFirstGame', true)
     }
 
     background
