@@ -25,14 +25,16 @@ export default class Title extends Phaser.Scene {
         const { width, height } = this
         // CONFIG SCENE         
         this.handlerScene.updateResize(this)
-        if (this.game.debugMode)
-        this.add.image(0, 0, 'guide').setOrigin(0).setDepth(4)
-        
-        // CONFIG SCENE
-        this.add.text(10,10,`Version: ${.01}`).setDepth(3)
         this.background = this.add.image(width / 2, height / 2,'title').setOrigin().setDepth(1)
         this.add.image(width / 2, height / 2,'title').setOrigin().setDepth(1)
 
+        if (this.game.debugMode)
+        this.add.image(0, 0, 'guide').setOrigin(0).setDepth(4)
+        
+        //version
+        this.add.text(10,10,`Version: ${.02}`).setDepth(3)
+        
+        //play button
         this.playBtn = this.add.image(width / 2, height * .9, 'play').setOrigin(.5).setDepth(3).setScale(.7).setInteractive();
         
         this.playBtn.on('pointerdown', () => {

@@ -30,6 +30,7 @@ export default class Race extends Phaser.Scene {
       this.width = this.game.screenBaseSize.width
       this.height = this.game.screenBaseSize.height
       this.handlerScene = this.scene.get('handler')
+      //determines coures length
       this.courseLength = 20;
       this.winner_finish = false;
       this.renderWinnerText = true;
@@ -344,14 +345,6 @@ export default class Race extends Phaser.Scene {
       coin.setVelocity(Phaser.Math.Between(-400, 400), -200);
     };
 
-
-    //trophy logic
-    this.gold_cup = this.add.image(this.width, this.height*.1, 'gold_cup').setDepth(7).setAlpha(0);
-    this.silver_cup = this.add.image(this.width, this.gold_cup.y+160, 'silver_cup').setDepth(7).setAlpha(0);
-    this.bronze_cup = this.add.image(this.width, this.silver_cup.y+160, 'bronze_cup').setDepth(7).setAlpha(0);
-    
-    this.cups.push(this.gold_cup,this.silver_cup,this.bronze_cup)
-
     //cash management
     this.cashText = (win,place) => {
 
@@ -398,9 +391,25 @@ export default class Race extends Phaser.Scene {
           this.tweens.add({
             targets: [text],
             x: this.width/2,
-            duration: 1200,
+            duration: 1000,
             ease: 'Linear'
           })
+    }   
+
+    //trophy logic
+    this.createTrophies = () => {
+      this.gold_cup = this.add.image(this.width, this.height*.1, 'gold_cup').setDepth(7).setAlpha(1);
+      this.silver_cup = this.add.image(this.width, this.gold_cup.y+160, 'silver_cup').setDepth(7).setAlpha(1);
+      this.bronze_cup = this.add.image(this.width, this.silver_cup.y+160, 'bronze_cup').setDepth(7).setAlpha(1);
+                    
+      this.tweens.add({
+        targets: [this.gold_cup,this.silver_cup,this.bronze_cup],
+        x: this.width/2,
+        duration: 1000,
+        ease: 'Linear',
+        yoyo: false
+      })
+      
     }
 
     this.winnerText=()=> {
@@ -569,24 +578,12 @@ export default class Race extends Phaser.Scene {
     //Winner animations
     if(this.winner_finish === true) {
 
-        //trophies
-        this.cups.forEach((c) => {
-             
-          c.setAlpha(1);
-              
-              this.tweens.add({
-                targets: [c],
-                x: this.width/2,
-                duration: 700,
-                ease: 'Linear',
-                yoyo: false
-              })
-        })
-        
+
         if(this.renderRankText === true){
+          this.createTrophies()
           this.rankText(170,this.finishers[0])
-          this.rankText(310,this.finishers[1])
-          this.rankText(500,this.finishers[2])
+          this.rankText(330,this.finishers[1])
+          this.rankText(490,this.finishers[2])
           this.renderRankText = false
         }
         //determine if horsebet on was placed
