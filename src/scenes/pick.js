@@ -22,7 +22,6 @@ export default class Pick extends Phaser.Scene {
         this.handlerScene = this.scene.get('handler')
         this.load.image('ui', '../assets/images/bet_ui.png');
         this.load.image('start', '../assets/images/start.png');
-        this.load.image('checkmark', '../assets/images/checkmark.png');
         this.load.image('cash_arrow', '../assets/images/cash_arrow.png');
         this.load.image('max_bet', '../assets/images/max_bet.png');
  
@@ -87,7 +86,7 @@ export default class Pick extends Phaser.Scene {
           .setInteractive();
 
         //max bet
-        this.maxBet = this.add.image(this.width *.9, this.height * .92, 'max_bet')
+        this.maxBet = this.add.image(this.width *.9, this.height * .93, 'max_bet')
         .setScale(.8)
         .setDepth(2)
         .setOrigin(.5)

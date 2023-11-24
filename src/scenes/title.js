@@ -26,9 +26,10 @@ export default class Title extends Phaser.Scene {
         // CONFIG SCENE         
         this.handlerScene.updateResize(this)
         if (this.game.debugMode)
-            this.add.image(0, 0, 'guide').setOrigin(0).setDepth(4)
-        // CONFIG SCENE 
-
+        this.add.image(0, 0, 'guide').setOrigin(0).setDepth(4)
+        
+        // CONFIG SCENE
+        this.add.text(10,10,`Version: ${.01}`).setDepth(3)
         this.background = this.add.image(width / 2, height / 2,'title').setOrigin().setDepth(1)
         this.add.image(width / 2, height / 2,'title').setOrigin().setDepth(1)
 

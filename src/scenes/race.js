@@ -30,7 +30,7 @@ export default class Race extends Phaser.Scene {
       this.width = this.game.screenBaseSize.width
       this.height = this.game.screenBaseSize.height
       this.handlerScene = this.scene.get('handler')
-      this.courseLength = 10;
+      this.courseLength = 20;
       this.winner_finish = false;
       this.renderWinnerText = true;
       this.renderLoseText = true;
@@ -398,7 +398,7 @@ export default class Race extends Phaser.Scene {
           this.tweens.add({
             targets: [text],
             x: this.width/2,
-            duration: 1600,
+            duration: 1200,
             ease: 'Linear'
           })
     }
@@ -469,7 +469,6 @@ export default class Race extends Phaser.Scene {
 
       playagain.on('pointerdown', () => {
             this.player.setFirstGameStatus(false)
-            console.log(`This should be FALSE: ${this.player.isFirstGame()}`)
             this.sceneStopped = true
             this.scene.stop('race')
             this.handlerScene.launchScene('pick')
@@ -551,7 +550,6 @@ export default class Race extends Phaser.Scene {
             if(h.horse.x >= 298 && this.renderWinnerText == true) {
               //create array of finishers
               if(h.finished === false && this.renderWinnerText === true){
-                console.log(h.name)
                 this.finishers.push(h.name);
                 h.finished = true;
               }
@@ -564,7 +562,6 @@ export default class Race extends Phaser.Scene {
           });
           if(allHorsesFinished) {
             this.winner_finish = true;
-            console.log(`finished here?: ${this.finishers}`)
           }
     }
 
@@ -580,7 +577,8 @@ export default class Race extends Phaser.Scene {
               this.tweens.add({
                 targets: [c],
                 x: this.width/2,
-                duration: 900,
+                duration: 700,
+                ease: 'Linear',
                 yoyo: false
               })
         })
@@ -591,10 +589,9 @@ export default class Race extends Phaser.Scene {
           this.rankText(500,this.finishers[2])
           this.renderRankText = false
         }
-
-        if(this.horsebeton == this.finishers[0] || this.horsebeton == this.finishers[1] || this.horsebeton == this.finishers[2]) {
+        //determine if horsebet on was placed
+        if(this.horsebeton === this.finishers[0] || this.horsebeton === this.finishers[1] || this.horsebeton === this.finishers[2]) {
         //check if the horse you bet on finished in the top 3
-          console.log(`Finishers: ${this.finishers}`)
           this.renderLoseText = false;
           this.spawnCoins();
 
@@ -604,21 +601,20 @@ export default class Race extends Phaser.Scene {
             this.renderWinnerText = false;
 
             //payouts  
-            if(this.finishers[0] = this.horsebeton) {
-              console.log(this.finishers)
+            if(this.finishers[0] === this.horsebeton) {
               this.cashText(true,6)
               console.log("Bet on Horse placed first")
               this.renderWinnerText = false;
               this.winner_finish = false;
             } 
-            if(this.finishers[1] = this.horsebeton) {
+            if(this.finishers[1] === this.horsebeton) {
               this.cashText(true,3)
               console.log("Bet on Horse placed second")
               this.winner_finish = false;
               this.renderWinnerText = false;
 
             } 
-            if(this.finishers[2] = this.horsebeton) {
+            if(this.finishers[2] === this.horsebeton) {
               this.cashText(true,2)
               console.log("Bet on Horse placed third")
               this.winner_finish = false;
@@ -627,6 +623,7 @@ export default class Race extends Phaser.Scene {
             }
           }
         }
+        //if no win
         if(this.renderLoseText === true) {
           this.renderWinnerText = false;
           this.player.getCash() == 0 ? this.loseText("Busted") : this.loseTest("You Lose");
