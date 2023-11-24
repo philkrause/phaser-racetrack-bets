@@ -191,7 +191,7 @@ export default class Race extends Phaser.Scene {
     },
     {
       horse: this.horse3,
-      name: 'Gandalf',
+      name: 'Brody',
       dashing: false,
       speed: 1,
       stamina: 1,
@@ -201,7 +201,7 @@ export default class Race extends Phaser.Scene {
     },
     {
       horse: this.horse4,
-      name: 'Vader',
+      name: 'Izzy',
       dashing: false,
       speed: 1,
       stamina: 1,
