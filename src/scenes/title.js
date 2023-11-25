@@ -32,7 +32,7 @@ export default class Title extends Phaser.Scene {
         this.add.image(0, 0, 'guide').setOrigin(0).setDepth(4)
         
         //version
-        this.add.text(10,10,`Version: ${.02}`).setDepth(3)
+        this.add.text(10,10,`Version: ${.03}`).setDepth(3)
         
         //play button
         this.playBtn = this.add.image(width / 2, height * .9, 'play').setOrigin(.5).setDepth(3).setScale(.7).setInteractive();

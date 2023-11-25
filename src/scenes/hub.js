@@ -29,19 +29,19 @@ export default class Hub extends Phaser.Scene {
         this.creditsTxt = this.add.text(this.canvasWidth / 2, this.canvasHeight - 22, 'Cluster Games 2023', { fontFamily: 'Arial', fontSize: '18px', color: '#000', }).setOrigin(.5).setDepth(1)
     }
 
-    create() {        
+    create() {
 
         let posItemHubBase = 32
         this.quitBtn = this.add.image(posItemHubBase, posItemHubBase, "quit").setOrigin(.5).setDepth(1).setInteractive({ cursor: "pointer" })
-        this.quitBtn.visible = true
+        this.quitBtn.visible = false
 
-        this.pointerUp(() => {
-            this.clickBackScene(this.handlerScene.sceneRunning)
-        }, this.quitBtn)
+        // this.pointerUp(() => {
+        //     this.clickBackScene(this.handlerScene.sceneRunning)
+        // }, this.quitBtn)
 
         let multiplePosY = this.game.embedded ? 1 : 3
         this.soundBtn = this.add.image(this.canvasWidth - posItemHubBase, posItemHubBase * multiplePosY, "sound").setOrigin(.5).setDepth(1).setInteractive({ cursor: "pointer" })
-        this.soundBtn.visible = true
+        this.soundBtn.visible = false
 
         if (this.game.debugMode) {
 
@@ -83,15 +83,21 @@ export default class Hub extends Phaser.Scene {
 
     update() {
         if (this.handlerScene.sceneRunning === 'title') {
-            this.soundBtn.visible = true
+            this.soundBtn.visible = false
             this.quitBtn.visible = false
             this.creditsTxt.visible = false
         } 
+        if (this.handlerScene.sceneRunning === 'pick') {
+            this.soundBtn.visible = false
+            this.quitBtn.visible = false
+            this.creditsTxt.visible = false
+        }
         if (this.handlerScene.sceneRunning === 'race') {
-            this.soundBtn.visible = true
+            this.soundBtn.visible = false
             this.quitBtn.visible = false
             this.creditsTxt.visible = false
         } 
+
     }
 
     clickBackScene(sceneTxt) {

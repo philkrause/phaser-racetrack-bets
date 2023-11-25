@@ -48,7 +48,7 @@ const game = new Phaser.Game(config)
 
 // Global
 game.debugMode = false
-game.embedded = false // game is embedded into a html iframe/object
+game.embedded = true // game is embedded into a html iframe/object
 
 game.screenBaseSize = {
     maxWidth: MAX_SIZE_WIDTH_SCREEN,
