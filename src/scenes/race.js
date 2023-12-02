@@ -181,7 +181,7 @@ export default class Race extends Phaser.Scene {
     },
     {
       horse: this.horse2,
-      name: 'Goldie',
+      name: 'Milo',
       dashing: false,
       speed: 1,
       stamina: 1,
